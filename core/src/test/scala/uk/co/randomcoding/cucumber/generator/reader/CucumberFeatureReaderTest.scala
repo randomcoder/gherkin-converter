@@ -175,5 +175,23 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.tags should be (Seq("@start-tag", "@feature-tag", "@final-tag"))
   }
 
+  test("A Feature Reader should be able to read the basic feature details from a file"){
+    Given("a simple feature file")
+    val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
+
+    When("the file is read")
+    val feature = FeatureReader.read(file)
+
+    Then("The feature has the expected details and tags")
+    feature.description should be ("The Feature Reader should be able to read basic feature files that have simple scenarios in.")
+    feature.inOrderTo should be("be able to parse feature details from a file")
+    feature.asA should be("person developing the library")
+    feature.iWantTo should be("be able to read details from a file")
+  }
+
+  test("A Feature Reader should be able to correctly identify the number of different scenarios present under the feature"){
+    pending
+  }
+
   private[this] implicit def stringToSource(s: String): Source = Source.fromString(s)
 }
