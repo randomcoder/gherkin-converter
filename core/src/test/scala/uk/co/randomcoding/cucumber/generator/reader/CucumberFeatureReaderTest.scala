@@ -21,6 +21,7 @@ package uk.co.randomcoding.cucumber.generator.reader
 
 import scala.io.Source
 import uk.co.randomcoding.cucumber.generator.FunTest
+import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
 
 /**
  * Tests to define and check the capabilities of the feature reader to read a
@@ -46,7 +47,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |over two lines""".stripMargin
   val multiLineAsA = """long description of who I am
     |and why I am the one to do this""".stripMargin
-  val multiLineIWantTo = """log list of the things I want to be able to do.
+  val multiLineIWantTo = """long list of the things I want to be able to do.
     |Thing 1, Thing 2 and Thing 3""".stripMargin
 
   val multiLineFeatureDescription = s"""Feature: $multiLineDescription
@@ -54,41 +55,103 @@ class CucumberFeatureReaderTest extends FunTest {
     |As a $multiLineAsA
     |I want to $multiLineIWantTo""".stripMargin
 
-  test("A Feature Reader should be able to read a Feature description from a single line") {
+  test("A Feature Reader should be able to read the Feature details from a feature that is described all in single lines and ends with a Scenario") {
     Given("a Feature with a single line description")
+    val description = s"""$singleLineFeatureDescription
+    |
+    |$SCENARIO""".stripMargin
+
     When("the Feature is read")
-    val feature = FeatureReader.read(singleLineFeatureDescription)
+    val feature = FeatureReader.read(description)
 
     Then("the generated Feature class contains the correct description")
-    feature.text should be(simpleDescription)
+    feature.description should be(simpleDescription)
+    feature.inOrderTo should be(simpleInOrderTo)
+    feature.asA should be(simpleAsA)
+    feature.iWantTo should be(simpleIWantTo)
   }
 
-  test("A Feature Reader should be able to read a Feature description that spans multiple lines") {
+  test("A Feature Reader should be able to read the Feature details from a feature that is described all in multiple lines and ends with a Scenario") {
     Given("a Feature with a multi line description")
+    val description = s"""$multiLineFeatureDescription
+    |
+    |$SCENARIO""".stripMargin
+
     When("the Feature is read")
-    val feature = FeatureReader.read(multiLineFeatureDescription)
+    val feature = FeatureReader.read(description)
 
     Then("the generated Feature class contains the correct description")
-    feature.text should be(multiLineDescription)
+    feature.description should be(multiLineDescription)
+    feature.inOrderTo should be(multiLineInOrderTo)
+    feature.asA should be(multiLineAsA)
+    feature.iWantTo should be(multiLineIWantTo)
   }
 
-  test("A Feature Reader should be able to read each of the Feature description components if they are all on a single line") {
-    Given("a Feature in which all description components are single line entries")
+  test("A Feature Reader should be able to read the Feature details from a feature that is described all in single lines and ends with a Scenario Outline") {
+    Given("a Feature with a single line description")
+    val description = s"""$singleLineFeatureDescription
+    |
+    |$SCENARIO_OUTLINE""".stripMargin
 
     When("the Feature is read")
+    val feature = FeatureReader.read(description)
 
-    Then("the generated Feature class contains the correct description components")
-    pending
+    Then("the generated Feature class contains the correct description")
+    feature.description should be(simpleDescription)
+    feature.inOrderTo should be(simpleInOrderTo)
+    feature.asA should be(simpleAsA)
+    feature.iWantTo should be(simpleIWantTo)
   }
 
-  test("A Feature Reader should be able to read each of the Feature description components if they all span multiple lines") {
-    Given("a Feature in which all description components are multi line entries")
+  test("A Feature Reader should be able to read the Feature details from a feature that is described all in multiple lines and ends with a Scenario Outline") {
+    Given("a Feature with a multi line description")
+    val description = s"""$multiLineFeatureDescription
+    |
+    |$SCENARIO_OUTLINE""".stripMargin
 
     When("the Feature is read")
+    val feature = FeatureReader.read(description)
 
-    Then("the generated Feature class contains the correct description components")
-    pending
+    Then("the generated Feature class contains the correct description")
+    feature.description should be(multiLineDescription)
+    feature.inOrderTo should be(multiLineInOrderTo)
+    feature.asA should be(multiLineAsA)
+    feature.iWantTo should be(multiLineIWantTo)
   }
+
+  test("A Feature Reader should be able to read the Feature details from a feature that is described all in single lines and the first Scenario (or Outline) has a tag") {
+    Given("a Feature with a single line description")
+    val description = s"""$singleLineFeatureDescription
+    |
+    |@a-tag""".stripMargin
+
+    When("the Feature is read")
+    val feature = FeatureReader.read(description)
+
+    Then("the generated Feature class contains the correct description")
+    feature.description should be(simpleDescription)
+    feature.inOrderTo should be(simpleInOrderTo)
+    feature.asA should be(simpleAsA)
+    feature.iWantTo should be(simpleIWantTo)
+  }
+
+  test("A Feature Reader should be able to read the Feature details from a feature that is described all in multiple lines and and the first Scenario (or Outline) has a tag") {
+    Given("a Feature with a multi line description")
+    val description = s"""$multiLineFeatureDescription
+    |
+    |@b-tag""".stripMargin
+
+    When("the Feature is read")
+    val feature = FeatureReader.read(description)
+
+    Then("the generated Feature class contains the correct description")
+    feature.description should be(multiLineDescription)
+    feature.inOrderTo should be(multiLineInOrderTo)
+    feature.asA should be(multiLineAsA)
+    feature.iWantTo should be(multiLineIWantTo)
+  }
+
+
 
   test("A Feature Reader should be able to read a single tag associated to a Feature") {
     Given("a Feature with a single tag")

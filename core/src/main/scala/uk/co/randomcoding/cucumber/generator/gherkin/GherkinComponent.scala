@@ -24,6 +24,6 @@ package uk.co.randomcoding.cucumber.generator.gherkin
  *
  * @author RandomCoder
  */
-sealed abstract class GherkinComponent(val identifier: String, val text: String)
+sealed abstract class GherkinComponent(val identifier: String)
 
-case class Feature(description: String) extends GherkinComponent("Feature", description)
+case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String) extends GherkinComponent("Feature")
