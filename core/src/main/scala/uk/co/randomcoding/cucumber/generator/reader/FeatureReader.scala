@@ -48,7 +48,11 @@ object FeatureReader extends EntityReader[Feature] {
    *  - Any tags
    */
   def read(source: Source): Feature = {
-    val lines = source.getLines().toSeq.map(_.trim)
+    val lines = for {
+      line <- source.getLines().toSeq
+      trimmed = line.trim
+      if (trimmed.nonEmpty && !trimmed.startsWith("#"))
+    } yield trimmed
 
     val tags = if (lines(0).trim.startsWith("@")) lines(0).trim().split("[, ]").toList else List.empty
 
@@ -59,10 +63,10 @@ object FeatureReader extends EntityReader[Feature] {
     val scenarioStartLineIndex = lines.indexWhere(line => line.startsWith("@") || line.startsWith(SCENARIO) || line.startsWith(SCENARIO_OUTLINE), iWantToLineIndex)
 
 
-    val featureName = lineSegmentAsString(source.reset(), featureLineIndex, inOrderToLineIndex).drop(FEATURE.length).trim
-    val inOrderTo = lineSegmentAsString(source.reset(), inOrderToLineIndex, asALineIndex).drop(IN_ORDER_TO.length).trim
-    val asA = lineSegmentAsString(source.reset(), asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
-    val iWantTo = lineSegmentAsString(source.reset(), iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
+    val featureName = lineSegmentAsString(lines, featureLineIndex, inOrderToLineIndex).drop(FEATURE.length).trim
+    val inOrderTo = lineSegmentAsString(lines, inOrderToLineIndex, asALineIndex).drop(IN_ORDER_TO.length).trim
+    val asA = lineSegmentAsString(lines, asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
+    val iWantTo = lineSegmentAsString(lines, iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
     Feature(featureName, inOrderTo, asA, iWantTo, tags)
   }
 }

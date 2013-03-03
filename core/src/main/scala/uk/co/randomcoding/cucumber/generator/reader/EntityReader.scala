@@ -32,12 +32,12 @@ import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponent
 trait EntityReader[T <: GherkinComponent] {
 
   /**
-   * Generate a [[GherkinComponent]] from the input source
+   * Generate a [[uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponent]] from the input source
    */
   def read(source: Source): T
 
-  protected def lineSegmentAsString(source: Source, start: Int, end: Int): String = {
-    val linesToUse = source.getLines().toList.slice(start, end)
+  protected def lineSegmentAsString(source: Seq[String], start: Int, end: Int): String = {
+    val linesToUse = source.slice(start, end)
     linesToUse.fold("")("%s\n%s".format(_, _).trim)
   }
 }
