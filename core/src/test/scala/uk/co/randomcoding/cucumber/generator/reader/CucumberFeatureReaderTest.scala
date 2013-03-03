@@ -155,16 +155,24 @@ class CucumberFeatureReaderTest extends FunTest {
 
   test("A Feature Reader should be able to read a single tag associated to a Feature") {
     Given("a Feature with a single tag")
+    val description = s"""@start-tag
+    |$singleLineFeatureDescription""".stripMargin
+
     When("the Feature is read")
+    val feature = FeatureReader.read(description)
     Then("the Feature class has the correct tag")
-    pending
+    feature.tags should be (Seq("@start-tag"))
   }
 
   test("A Feature Reader should be able to read a multiple tags associated to a Feature") {
     Given("a Feature with a multiple tags")
+    val description = s"""@start-tag @feature-tag @final-tag
+    |$singleLineFeatureDescription""".stripMargin
+
     When("the Feature is read")
-    Then("the Feature class has the correct tags")
-    pending
+    val feature = FeatureReader.read(description)
+    Then("the Feature class has the correct tag")
+    feature.tags should be (Seq("@start-tag", "@feature-tag", "@final-tag"))
   }
 
   private[this] implicit def stringToSource(s: String): Source = Source.fromString(s)

@@ -50,6 +50,8 @@ object FeatureReader extends EntityReader[Feature] {
   def read(source: Source): Feature = {
     val lines = source.getLines().toSeq.map(_.trim)
 
+    val tags = if (lines(0).trim.startsWith("@")) lines(0).trim().split("[, ]").toSeq else Seq.empty
+
     val featureLineIndex = lines.indexWhere(_.startsWith(FEATURE))
     val inOrderToLineIndex = lines.indexWhere(_.startsWith(IN_ORDER_TO))
     val asALineIndex = lines.indexWhere(_.startsWith(AS_A))
@@ -60,6 +62,6 @@ object FeatureReader extends EntityReader[Feature] {
     val inOrderTo = lineSegmentAsString(source.reset(), inOrderToLineIndex, asALineIndex).drop(IN_ORDER_TO.length).trim
     val asA = lineSegmentAsString(source.reset(), asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
     val iWantTo = lineSegmentAsString(source.reset(), iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
-    Feature(featureName, inOrderTo, asA, iWantTo)
+    Feature(featureName, inOrderTo, asA, iWantTo, tags)
   }
 }
