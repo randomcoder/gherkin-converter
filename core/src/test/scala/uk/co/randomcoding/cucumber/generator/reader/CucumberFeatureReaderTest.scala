@@ -190,7 +190,14 @@ class CucumberFeatureReaderTest extends FunTest {
   }
 
   test("A Feature Reader should be able to correctly identify the number of different scenarios present under the feature"){
-    pending
+    Given("a feature with two simple scenarios")
+    val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
+
+    When("the feature is read")
+    val feature = FeatureReader.read(file)
+
+    Then("the feature contains 2 scenarios")
+    feature.scenarios.size should be(2)
   }
 
   private[this] implicit def stringToSource(s: String): Source = Source.fromString(s)

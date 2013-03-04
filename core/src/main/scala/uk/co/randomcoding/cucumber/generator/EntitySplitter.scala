@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright (C) 2013 RandomCoder <randomcoder@randomcoding.co.uk>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,15 +18,23 @@
  * Contributors:
  * RandomCoder - initial API and implementation and/or initial documentation
  */
-package uk.co.randomcoding.cucumber.generator.gherkin
+
+package uk.co.randomcoding.cucumber.generator
+
+import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponent
 
 /**
- * A generic component that represents a Gherkin Syntax component
- *
+ * Split out certain parts of a file read in as a Sequence of Strings (one per line)
+ * 
  * @author RandomCoder
  */
-sealed abstract class GherkinComponent(val identifier: String, tags: Seq[String])
+trait EntitySplitter {
 
-case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String, scenarios: Seq[Scenario], tags: Seq[String]) extends GherkinComponent("Feature", tags)
-
-case class Scenario(description: String, tags: Seq[String]) extends GherkinComponent("Scenario", tags)
+  /**
+   * Given a set of input lines, get the line ranges that contain whole parts of a Gherkin file
+   *
+   * @param lines The relevant section of the file for the splitter
+   * @return The ordered groups of lines that can be further processed
+   */
+  def split(lines: Seq[String]): Seq[Seq[String]]
+}

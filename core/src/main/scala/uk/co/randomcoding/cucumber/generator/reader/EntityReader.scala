@@ -34,10 +34,10 @@ trait EntityReader[T <: GherkinComponent] {
   /**
    * Generate a [[uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponent]] from the input source
    */
-  def read(source: Source): T
+  def read(lines: Seq[String]): T
 
-  protected def lineSegmentAsString(source: Seq[String], start: Int, end: Int): String = {
-    val linesToUse = source.slice(start, end)
+  protected def lineSegmentAsString(lines: Seq[String], start: Int, end: Int): String = {
+    val linesToUse = lines.slice(start, end)
     linesToUse.fold("")("%s\n%s".format(_, _).trim)
   }
 }

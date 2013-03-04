@@ -67,6 +67,10 @@ object FeatureReader extends EntityReader[Feature] {
     val inOrderTo = lineSegmentAsString(lines, inOrderToLineIndex, asALineIndex).drop(IN_ORDER_TO.length).trim
     val asA = lineSegmentAsString(lines, asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
     val iWantTo = lineSegmentAsString(lines, iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
+
+    val scenarios = scenarioSections(lines).map(ScenarioReader.read(_))
+
     Feature(featureName, inOrderTo, asA, iWantTo, tags)
   }
+
 }

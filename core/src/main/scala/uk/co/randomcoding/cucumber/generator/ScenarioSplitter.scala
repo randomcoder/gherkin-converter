@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright (C) 2013 RandomCoder <randomcoder@randomcoding.co.uk>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,15 +18,29 @@
  * Contributors:
  * RandomCoder - initial API and implementation and/or initial documentation
  */
-package uk.co.randomcoding.cucumber.generator.gherkin
+
+package uk.co.randomcoding.cucumber.generator
 
 /**
- * A generic component that represents a Gherkin Syntax component
+ * Splits the parts of a file (as lines) into scenario sections
  *
  * @author RandomCoder
  */
-sealed abstract class GherkinComponent(val identifier: String, tags: Seq[String])
+object ScenarioSplitter {
+  /**
+   * Given a set of input lines, get the line ranges that contain whole Scenarios or Scenario Outlines.
+   *
+   * A scenario is denoted as starting with either a tag line or a '''Scenario:''' or '''Scenario Outline:''' entry.
+   * A scenario continues until the next scenario or until the end of the lines.
+   *
+   * The lines are assumed to '''NOT''' contain any Feature lines.
+   *
+   * @param lines The raw input lines of the feature file with the feature components removed
+   * @return The collections of lines that make up each '''Scenario:''' or '''Scenario Outline:'''
+   */
+  def split(lines: Seq[String]): Seq[Seq[String]] = {
 
-case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String, scenarios: Seq[Scenario], tags: Seq[String]) extends GherkinComponent("Feature", tags)
-
-case class Scenario(description: String, tags: Seq[String]) extends GherkinComponent("Scenario", tags)
+    // Get the indexes of the starts of each scenario
+    Nil
+  }
+}
