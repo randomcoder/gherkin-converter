@@ -62,7 +62,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |$SCENARIO""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
 
     Then("the generated Feature class contains the correct description")
     feature.description should be(simpleDescription)
@@ -78,7 +78,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |$SCENARIO""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
 
     Then("the generated Feature class contains the correct description")
     feature.description should be(multiLineDescription)
@@ -94,7 +94,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |$SCENARIO_OUTLINE""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
 
     Then("the generated Feature class contains the correct description")
     feature.description should be(simpleDescription)
@@ -110,7 +110,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |$SCENARIO_OUTLINE""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
 
     Then("the generated Feature class contains the correct description")
     feature.description should be(multiLineDescription)
@@ -126,7 +126,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |@a-tag""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
 
     Then("the generated Feature class contains the correct description")
     feature.description should be(simpleDescription)
@@ -142,7 +142,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |@b-tag""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
 
     Then("the generated Feature class contains the correct description")
     feature.description should be(multiLineDescription)
@@ -159,7 +159,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |$singleLineFeatureDescription""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
     Then("the Feature class has the correct tag")
     feature.tags should be (Seq("@start-tag"))
   }
@@ -170,7 +170,7 @@ class CucumberFeatureReaderTest extends FunTest {
     |$singleLineFeatureDescription""".stripMargin
 
     When("the Feature is read")
-    val feature = FeatureReader.read(description)
+    val feature = FeatureReader.read(Source.fromString(description))
     Then("the Feature class has the correct tag")
     feature.tags should be (Seq("@start-tag", "@feature-tag", "@final-tag"))
   }
@@ -200,5 +200,5 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.scenarios.size should be(2)
   }
 
-  private[this] implicit def stringToSource(s: String): Source = Source.fromString(s)
+  private[this] implicit def sourceToLines(s: Source): List[String] = s.getLines().toList
 }

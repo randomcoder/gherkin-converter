@@ -47,30 +47,25 @@ object FeatureReader extends EntityReader[Feature] {
    *  - In order to line
    *  - Any tags
    */
-  def read(source: Source): Feature = {
-    val lines = for {
-      line <- source.getLines().toSeq
-      trimmed = line.trim
-      if (trimmed.nonEmpty && !trimmed.startsWith("#"))
-    } yield trimmed
+  def read(lines: Seq[String]): Feature = {
+    val tidyLines = lines.map(_.trim)
+    val tags = if (tidyLines(0).startsWith("@")) tidyLines(0).split("[, ]").toList else List.empty
 
-    val tags = if (lines(0).trim.startsWith("@")) lines(0).trim().split("[, ]").toList else List.empty
-
-    val featureLineIndex = lines.indexWhere(_.startsWith(FEATURE))
-    val inOrderToLineIndex = lines.indexWhere(_.startsWith(IN_ORDER_TO))
-    val asALineIndex = lines.indexWhere(_.startsWith(AS_A))
-    val iWantToLineIndex = lines.indexWhere(_.startsWith(I_WANT_TO))
-    val scenarioStartLineIndex = lines.indexWhere(line => line.startsWith("@") || line.startsWith(SCENARIO) || line.startsWith(SCENARIO_OUTLINE), iWantToLineIndex)
+    val featureLineIndex = tidyLines.indexWhere(_.startsWith(FEATURE))
+    val inOrderToLineIndex = tidyLines.indexWhere(_.startsWith(IN_ORDER_TO))
+    val asALineIndex = tidyLines.indexWhere(_.startsWith(AS_A))
+    val iWantToLineIndex = tidyLines.indexWhere(_.startsWith(I_WANT_TO))
+    val scenarioStartLineIndex = tidyLines.indexWhere(line => line.startsWith("@") || line.startsWith(SCENARIO) || line.startsWith(SCENARIO_OUTLINE), iWantToLineIndex)
 
 
-    val featureName = lineSegmentAsString(lines, featureLineIndex, inOrderToLineIndex).drop(FEATURE.length).trim
-    val inOrderTo = lineSegmentAsString(lines, inOrderToLineIndex, asALineIndex).drop(IN_ORDER_TO.length).trim
-    val asA = lineSegmentAsString(lines, asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
-    val iWantTo = lineSegmentAsString(lines, iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
+    val featureName = lineSegmentAsString(tidyLines, featureLineIndex, inOrderToLineIndex).drop(FEATURE.length).trim
+    val inOrderTo = lineSegmentAsString(tidyLines, inOrderToLineIndex, asALineIndex).drop(IN_ORDER_TO.length).trim
+    val asA = lineSegmentAsString(tidyLines, asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
+    val iWantTo = lineSegmentAsString(tidyLines, iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
 
-    val scenarios = scenarioSections(lines).map(ScenarioReader.read(_))
+    //val scenarios = scenarioSections(lines).map(ScenarioReader.read(_))
 
-    Feature(featureName, inOrderTo, asA, iWantTo, tags)
+    Feature(featureName, inOrderTo, asA, iWantTo, tags, Seq(Scenario("Dummy", Seq.empty)))
   }
 
 }

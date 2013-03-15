@@ -26,6 +26,6 @@ package uk.co.randomcoding.cucumber.generator.gherkin
  */
 sealed abstract class GherkinComponent(val identifier: String, tags: Seq[String])
 
-case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String, scenarios: Seq[Scenario], tags: Seq[String]) extends GherkinComponent("Feature", tags)
+case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String, tags: Seq[String], scenarios: Seq[Scenario]) extends GherkinComponent("Feature", tags)
 
 case class Scenario(description: String, tags: Seq[String]) extends GherkinComponent("Scenario", tags)
