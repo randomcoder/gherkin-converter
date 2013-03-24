@@ -21,6 +21,8 @@
 
 package uk.co.randomcoding.cucumber.generator
 
+import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
+
 /**
  * Splits the parts of a file (as lines) into scenario sections
  *
@@ -39,8 +41,21 @@ object ScenarioSplitter {
    * @return The collections of lines that make up each '''Scenario:''' or '''Scenario Outline:'''
    */
   def split(lines: Seq[String]): Seq[Seq[String]] = {
+    def isScenarioStartLine(line: (String, Int)) = line._1.startsWith(SCENARIO) || line._1.startsWith(SCENARIO_OUTLINE) || line._1.startsWith("@")
+    def lineIndex(line: (String, Int)) = line._2
 
-    // Get the indexes of the starts of each scenario
-    Nil
+    val indexedLines = lines.zipWithIndex
+    val sectionBounds = indexedLines.filter(isScenarioStartLine).map(lineIndex)
+
+    val scenarios = for {
+      bound <- sectionBounds.sliding(2, 1).toList
+    } yield {
+      bound match {
+        case start :: end :: Nil => lines.slice(bound(0), bound(1))
+        case start :: Nil => lines.drop(start)
+      }
+    }
+
+    scenarios
   }
 }

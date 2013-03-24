@@ -22,6 +22,7 @@ package uk.co.randomcoding.cucumber.generator.reader
 
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
 import uk.co.randomcoding.cucumber.generator.gherkin._
+import uk.co.randomcoding.cucumber.generator.ScenarioSplitter
 
 /**
  * Reads the Feature level details from a feature description
@@ -62,23 +63,9 @@ object FeatureReader extends EntityReader[Feature] {
     val asA = lineSegmentAsString(tidyLines, asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
     val iWantTo = lineSegmentAsString(tidyLines, iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
 
-    val scenarios = scenarioSections(lines).map(ScenarioReader.read(_))
+    val scenarioLines = lines.drop(scenarioStartLineIndex - 1)
+    val scenarios = ScenarioSplitter.split(scenarioLines).map(ScenarioReader.read(_))
 
-    Feature(featureName, inOrderTo, asA, iWantTo, tags, Seq(Scenario("Dummy", Seq.empty)))
-  }
-
-  private[this] def scenarioSections(lines: Seq[String]): Seq[Seq[String]] = {
-    val scenarioBounds = (lines: Seq[String]) => {
-      val startLine = lines.indexWhere(line => line.startsWith(SCENARIO) || line.startsWith(SCENARIO_OUTLINE))
-      val nextStartLine = lines.indexWhere(line => line.startsWith(SCENARIO) || line.startsWith(SCENARIO_OUTLINE), startLine) match {
-        case -1 => lines.length
-        case other => other -1
-      }
-      (startLine, nextStartLine)
-    }
-
-    val sectionBounds = lines.zipWithIndex.filter(line => line._1.startsWith(SCENARIO) || line._1.startsWith(SCENARIO_OUTLINE)).map(_._2).sliding(2, 1).toSeq
-
-    sectionBounds.map(bounds => lines.slice(bounds(0), bounds(1)))
+    Feature(featureName, inOrderTo, asA, iWantTo, tags, scenarios)
   }
 }
