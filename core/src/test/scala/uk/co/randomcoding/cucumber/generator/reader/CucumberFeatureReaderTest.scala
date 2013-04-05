@@ -123,7 +123,11 @@ class CucumberFeatureReaderTest extends FunTest {
     Given("a Feature with a single line description")
     val description = s"""$singleLineFeatureDescription
     |
-    |@a-tag""".stripMargin
+    |@a-tag
+    |$SCENARIO A Scenario
+    |$GIVEN Given
+    |$WHEN When
+    |$THEN Then""".stripMargin
 
     When("the Feature is read")
     val feature = FeatureReader.read(Source.fromString(description))
@@ -139,7 +143,11 @@ class CucumberFeatureReaderTest extends FunTest {
     Given("a Feature with a multi line description")
     val description = s"""$multiLineFeatureDescription
     |
-    |@b-tag""".stripMargin
+    |@b-tag
+    |$SCENARIO A Scenario
+    |$GIVEN Given
+    |$WHEN When
+    |$THEN Then""".stripMargin
 
     When("the Feature is read")
     val feature = FeatureReader.read(Source.fromString(description))
