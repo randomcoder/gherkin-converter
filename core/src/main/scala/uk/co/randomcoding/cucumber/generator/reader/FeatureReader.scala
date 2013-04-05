@@ -21,6 +21,7 @@ package uk.co.randomcoding.cucumber.generator.reader
 
 import uk.co.randomcoding.cucumber.generator.gherkin._
 import gherkin.parser.Parser
+import uk.co.randomcoding.cucumber.generator.builder.FeatureBuilder
 
 /**
  * Reads the Feature level details from a feature description

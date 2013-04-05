@@ -22,6 +22,7 @@ package uk.co.randomcoding.cucumber.generator.reader
 import scala.io.Source
 import uk.co.randomcoding.cucumber.generator.FunTest
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
+import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
 
 /**
  * Tests to define and check the capabilities of the feature reader to read a

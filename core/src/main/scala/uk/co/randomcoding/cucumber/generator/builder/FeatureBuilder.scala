@@ -18,7 +18,7 @@
  * RandomCoder - initial API and implementation and/or initial documentation
  */
 
-package uk.co.randomcoding.cucumber.generator.reader
+package uk.co.randomcoding.cucumber.generator.builder
 
 import java.util
 

@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (C) 2013 RandomCoder <randomcoder@randomcoding.co.uk>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,24 +18,16 @@
  * RandomCoder - initial API and implementation and/or initial documentation
  */
 
-package uk.co.randomcoding.cucumber.generator.reader
-
-import uk.co.randomcoding.cucumber.generator.gherkin.Scenario
-import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
+package uk.co.randomcoding.cucumber.generator.builder
 
 /**
- * Reads the details from a sequence of lines that is a single Scenario.
- * This '''DOES NOT''' process ''Scenario Outline''s
+ * Build a [[uk.co.randomcoding.cucumber.generator.gherkin.Scenario]] from incremental input
  *
  * @author RandomCoder
  */
-object ScenarioReader extends EntityReader[Scenario] {
-  def read(lines: Seq[String]): Scenario = {
-    val (tags, description) = if (lines(0).startsWith("@")) {
-      (lines(0).trim.split("[, ]").toList, lines(1).trim.drop(SCENARIO.length))
-    } else (List.empty, lines(0).trim.drop(SCENARIO.length))
+class ScenarioBuilder {
 
-
-    Scenario(description, tags)
-  }
+  private var isOutline = false
+  private var description = ""
+  private var steps = Seq.empty[String]
 }
