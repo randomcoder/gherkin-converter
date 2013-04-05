@@ -30,7 +30,7 @@ import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier.
  *
  * @author RandomCoder
  */
-class ScenarioReader extends EntityReader[Scenario] {
+object ScenarioReader extends EntityReader[Scenario] {
   def read(lines: Seq[String]): Scenario = {
     val (tags, description) = if (lines(0).startsWith("@")) {
       (lines(0).trim.split("[, ]").toList, lines(1).trim.drop(SCENARIO.length))

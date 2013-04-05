@@ -21,11 +21,9 @@
 
 package uk.co.randomcoding.cucumber.generator
 
-import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponent
-
 /**
  * Split out certain parts of a file read in as a Sequence of Strings (one per line)
- * 
+ *
  * @author RandomCoder
  */
 trait EntitySplitter {
