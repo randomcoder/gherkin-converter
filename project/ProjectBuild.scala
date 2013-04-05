@@ -111,7 +111,7 @@ object ProjectBuild extends Build {
   val baseDependencies = testDependencies ++ jodaTimeDependencies
 
   // Dependencies for the core project
-  val coreProjectDependencies = baseDependencies
+  val coreProjectDependencies = baseDependencies ++ Seq(gherkin)
 
   // Dependencies for the other project
   val otherProjectDependencies = baseDependencies

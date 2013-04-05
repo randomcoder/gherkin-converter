@@ -25,14 +25,14 @@ import Keys._
  * Common build settings for projects.
  */
 object BuildSettings {
-  import Resolvers._
+
   import net.virtualvoid.sbt.graph.Plugin._
 
   val buildOrganization = "uk.co.randomcoding"
   val buildVersion = "1.0.0-SNAPSHOT"
   val buildScalaVersion = "2.10.0"
 
-  // Defines the default settigs to use for projects
+  // Defines the default settings to use for projects
   lazy val buildSettings: Seq[Project.Setting[_]] = Defaults.defaultSettings ++ commonSettings ++ pluginGraphSettings ++ testSettings ++ sourceDirSettings
 
   // Settings for the dependency graph plugin
@@ -44,10 +44,7 @@ object BuildSettings {
     version := buildVersion,
     scalaVersion := buildScalaVersion,
     shellPrompt := ShellPrompt.buildShellPrompt,
-    scalacOptions := Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions"),
-    resolvers ++= repos,
-    publishTo := Some(spdevArchivaRepo),
-    credentials += spdevArchivaCredentials)
+    scalacOptions := Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions"))
 
   // Set the default, Scala only source directories
   private val sourceDirSettings = Seq(

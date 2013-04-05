@@ -38,7 +38,7 @@ object Dependencies {
    */
   val exclude = (org: String, packageName: String) => ExclusionRule(organization = org, name = packageName)
 
-  // We want to exclude log4j where possible as we are using logback for logging 
+  // We want to exclude log4j where possible as we are using logback for logging
   lazy val excludeLog4j = exclude("log4j", "log4j")
 
   // Use Joda Time rather than the java.util.Date classes
@@ -58,8 +58,10 @@ object Dependencies {
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
 
+  val gherkin = "info.cukes" % "gherkin" % "2.11.6"
+
   // Define the commonly used dependency collections
-  val loggingDependencies = Seq(logback, groovy)
+  val loggingDependencies = Seq(logback, groovy, grizzledSlf4j)
   val jodaTimeDependencies = Seq(jodaTime, jodaConvert)
   val testDependencies = Seq(scalatest)
 }
