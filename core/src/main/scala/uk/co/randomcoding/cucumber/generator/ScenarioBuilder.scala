@@ -17,32 +17,17 @@
  * Contributors:
  * RandomCoder - initial API and implementation and/or initial documentation
  */
-package uk.co.randomcoding.cucumber.generator.gherkin
+
+package uk.co.randomcoding.cucumber.generator
 
 /**
- * Identifiers for the different Gherkin Components
+ * Build a [[uk.co.randomcoding.cucumber.generator.gherkin.Scenario]] from incremental input
  *
- * @author Tim Sheppard
+ * @author RandomCoder
  */
-object GherkinComponentIdentifier {
+class ScenarioBuilder {
 
-  val FEATURE = "Feature:"
-
-  val AS_A = "As a"
-
-  val IN_ORDER_TO = "In order to"
-
-  val I_WANT_TO = "I want to"
-
-  val SCENARIO = "Scenario:"
-
-  val SCENARIO_OUTLINE = "Scenario Outline:"
-
-  val GIVEN = "Given"
-
-  val WHEN = "When"
-
-  val THEN = "Then"
-
-  val AND = "And"
+  private var isOutline = false
+  private var description = ""
+  private var steps = Seq.empty[String]
 }

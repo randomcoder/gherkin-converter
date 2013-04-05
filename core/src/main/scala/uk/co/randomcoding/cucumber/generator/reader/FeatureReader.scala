@@ -19,10 +19,8 @@
  */
 package uk.co.randomcoding.cucumber.generator.reader
 
-import scala.io.Source
-
 import uk.co.randomcoding.cucumber.generator.gherkin._
-import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
+import gherkin.parser.Parser
 
 /**
  * Reads the Feature level details from a feature description
@@ -39,33 +37,14 @@ import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier.
 object FeatureReader extends EntityReader[Feature] {
 
   /**
-   * Read the feature details:
-   *
-   *  - Feature description
-   *  - As a line
-   *  - I want to line
-   *  - In order to line
-   *  - Any tags
+   * Parse the feature details from the file input as a sequence of strings
    */
   def read(lines: Seq[String]): Feature = {
-    val tidyLines = lines.map(_.trim)
-    val tags = if (tidyLines(0).startsWith("@")) tidyLines(0).split("[, ]").toList else List.empty
+    val builder = new FeatureBuilder()
+    val parser = new Parser(builder)
+    parser.parse(lines.mkString("\n"), "", 0)
 
-    val featureLineIndex = tidyLines.indexWhere(_.startsWith(FEATURE))
-    val inOrderToLineIndex = tidyLines.indexWhere(_.startsWith(IN_ORDER_TO))
-    val asALineIndex = tidyLines.indexWhere(_.startsWith(AS_A))
-    val iWantToLineIndex = tidyLines.indexWhere(_.startsWith(I_WANT_TO))
-    val scenarioStartLineIndex = tidyLines.indexWhere(line => line.startsWith("@") || line.startsWith(SCENARIO) || line.startsWith(SCENARIO_OUTLINE), iWantToLineIndex)
-
-
-    val featureName = lineSegmentAsString(tidyLines, featureLineIndex, inOrderToLineIndex).drop(FEATURE.length).trim
-    val inOrderTo = lineSegmentAsString(tidyLines, inOrderToLineIndex, asALineIndex).drop(IN_ORDER_TO.length).trim
-    val asA = lineSegmentAsString(tidyLines, asALineIndex, iWantToLineIndex).drop(AS_A.length).trim
-    val iWantTo = lineSegmentAsString(tidyLines, iWantToLineIndex, scenarioStartLineIndex).drop(I_WANT_TO.length).trim
-
-    //val scenarios = scenarioSections(lines).map(ScenarioReader.read(_))
-
-    Feature(featureName, inOrderTo, asA, iWantTo, tags, Seq(Scenario("Dummy", Seq.empty)))
+    builder.build
   }
 
 }
