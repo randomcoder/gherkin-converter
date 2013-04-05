@@ -35,7 +35,7 @@ import uk.co.randomcoding.cucumber.generator.builder.FeatureBuilder
  *
  * @author RandomCoder
  */
-object FeatureReader extends EntityReader[Feature] {
+object FeatureReader {
 
   /**
    * Parse the feature details from the file input as a sequence of strings
