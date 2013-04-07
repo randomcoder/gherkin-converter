@@ -43,6 +43,8 @@ class FeatureBuilder() extends Formatter {
 
   private var scenarios: Seq[GScenario] = Nil
 
+  private var scenarioBuilder: Option[ScenarioBuilder] = None
+
   override def uri(featureUri: String) {
     /* Empty Method*/
   }
@@ -71,7 +73,16 @@ class FeatureBuilder() extends Formatter {
   }
 
   override def scenario(scenario: gherkin.formatter.model.Scenario) {
-    scenarios = scenarios :+ GScenario(scenario.getDescription, scenario.getTags.map(_.getName))
+    scenarioBuilder match {
+      case Some(builder) => scenarios = scenarios :+ builder.build
+      case _ => // do nothing
+    }
+
+    val builder = new ScenarioBuilder
+    builder.description(scenario.getDescription)
+    scenario.getTags.map(t => builder.tag(t.getName))
+    scenarioBuilder = Some(builder)
+    //scenarios = scenarios :+ GScenario(scenario.getDescription, scenario.getTags.map(_.getName))
   }
 
   override def scenarioOutline(scenarioOutline: gherkin.formatter.model.ScenarioOutline) {
@@ -83,6 +94,7 @@ class FeatureBuilder() extends Formatter {
   }
 
   override def step(step: Step) {
+    println(step.toString)
     // not implemented yet
   }
 
@@ -94,9 +106,11 @@ class FeatureBuilder() extends Formatter {
 
   override def done() {
     // not implemented yet
+    println("Done")
   }
 
   override def close() {
+    println("Close")
     // not implemented yet
   }
 

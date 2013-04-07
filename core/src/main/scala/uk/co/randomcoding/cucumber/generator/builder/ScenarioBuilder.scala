@@ -20,6 +20,8 @@
 
 package uk.co.randomcoding.cucumber.generator.builder
 
+import uk.co.randomcoding.cucumber.generator.gherkin.Scenario
+
 /**
  * Build a [[uk.co.randomcoding.cucumber.generator.gherkin.Scenario]] from incremental input
  *
@@ -27,7 +29,21 @@ package uk.co.randomcoding.cucumber.generator.builder
  */
 class ScenarioBuilder {
 
-  private var isOutline = false
-  private var description = ""
-  private var steps = Seq.empty[String]
+  private var desc = ""
+  private var givens = Seq.empty[String]
+  private var whens = Seq.empty[String]
+  private var thens = Seq.empty[String]
+  private var tags = Seq.empty[String]
+
+  def description(des: String) = desc = des
+
+  def given(step: String) = givens = step +: givens
+
+  def when(step: String) = whens = step +: whens
+
+  def then(step: String) = thens = step +: thens
+
+  def tag(tag: String) = tags = tag +: tags
+
+  def build: Scenario = Scenario(desc, tags)
 }
