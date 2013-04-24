@@ -21,6 +21,7 @@ package uk.co.randomcoding.cucumber.generator.reader
 
 import scala.io.Source
 import uk.co.randomcoding.cucumber.generator.FunTest
+import uk.co.randomcoding.cucumber.generator.FeatureTestHelpers._
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
 
 /**
@@ -159,8 +160,6 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be(multiLineIWantTo)
   }
 
-
-
   test("A Feature Reader should be able to read a single tag associated to a Feature") {
     Given("a Feature with a single tag")
     val description = s"""@start-tag
@@ -207,6 +206,4 @@ class CucumberFeatureReaderTest extends FunTest {
     Then("the feature contains 2 scenarios")
     feature.scenarios.size should be(2)
   }
-
-  private[this] implicit def sourceToLines(s: Source): List[String] = s.getLines().toList
 }

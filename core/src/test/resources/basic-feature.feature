@@ -12,6 +12,6 @@ I want to be able to read details from a file
 
   @scenario-tag-2
   Scenario: Another simple scenario that has single line steps
-    Given a second  precondition
+    Given a second precondition
     When I do something else
     Then I also get the result I expected
