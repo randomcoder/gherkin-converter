@@ -19,7 +19,10 @@
  */
 package uk.co.randomcoding.cucumber.generator.reader
 
+import scala.io.Source
 import uk.co.randomcoding.cucumber.generator.FunTest
+import uk.co.randomcoding.cucumber.generator.FeatureTestHelpers._
+import uk.co.randomcoding.cucumber.generator.gherkin.Scenario
 
 /**
  * Tests for the correct reading of Scenario information including tags and Example data
@@ -29,91 +32,44 @@ import uk.co.randomcoding.cucumber.generator.FunTest
  */
 class CucumberScenarioReaderTest extends FunTest {
 
-  test("A Scenario Reader should be able to read a Scenario description from a single line") {
-    Given("a Scenario with a single line description")
+  private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
+    Seq("Given a simple precondition"), Seq("When I do something easy"), Seq("Then I get the result I expected"))
 
-    When("the Scenario is read")
+  private[this] val simpleScenarioWithAnds = Scenario("A simple scenario where all steps have an 'and'", Seq("@scenario-and-tag-1"),
+    Seq("Given a simple precondition", "And another simple precondition"),
+    Seq("When I do something easy", "And do something tricky"),
+    Seq("Then I get the result I expected", "And nothing else happens"))
 
-    Then("the generated Scenario class contains the correct description")
-    pending
+  private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
+    Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))
+
+  private[this] val basicScenario2 = Scenario("Another simple scenario that has single line steps", Seq("@scenario-tag-2"),
+    Seq("Given a second precondition"), Seq("When I do something else"), Seq("Then I also get the result I expected"))
+
+  test("A Feature Reader is able to read a Scenario from a Feature that has a single Scenario") {
+    Given("a Feature Reader set to read a feature file with a single scenario containing only Given When and Then")
+    val source = Source.fromInputStream(getClass.getResourceAsStream("/single-scenario.feature"))
+    When("the feature file is parsed")
+    val feature = FeatureReader.read(source)
+    Then("it contains a single Scenario with the expected properties")
+    feature.scenarios should be(Seq(simpleScenario))
   }
 
-  test("A Scenario Reader should be able to read a Scenario description that spans multiple lines") {
-    Given("a Scenario with a single line description")
-
-    When("the Scenario is read")
-
-    Then("the generated Scenario class contains the correct description")
-    pending
+  test("A Feature Reader is able to read a Scenario from a Feature that has two simple Scenarios") {
+    Given("a Feature Reader set to read a feature file with two simple scenarios containing only Given When and Then")
+    val source = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
+    When("the feature file is parsed")
+    val feature = FeatureReader.read(source)
+    Then("it contains a single Scenario with the expected properties")
+    feature.scenarios should be(Seq(basicScenario1, basicScenario2))
   }
 
-  test("A Scenario Reader should be able to read a single tag associated to a Scenario") {
-    Given("a Scenario with a single tag")
-    When("the Scenario is read")
-    Then("the Scenario class has the correct tag")
-    pending
+  test("A Feature Reader is able to read a Scenario from a Feature that has a single Scenario with each step having 'Ands'") {
+    Given("a Feature Reader set to read a feature file with a single scenario where each step also has an 'And'")
+    val source = Source.fromInputStream(getClass.getResourceAsStream("/single-scenario-with-ands.feature"))
+    When("the feature file is parsed")
+    val feature = FeatureReader.read(source)
+    Then("it contains a single Scenario with the expected properties")
+    feature.scenarios should be(Seq(simpleScenarioWithAnds))
   }
-
-  test("A Scenario Reader should be able to read a multiple tags associated to a scenario") {
-    Given("a Scenario with a multiple tags")
-    When("the Scenario is read")
-    Then("the Scenario class has the correct tags")
-    pending
-  }
-
-  test("A Scenario Reader will set a Scenario Outline flag if the Scenario is a Scenario Outline") {
-    Given("a Scenario Outline definition")
-    When("the Scenario is read")
-    Then("the Scenario class will have the 'outline' flas set")
-    pending
-  }
-
-  test("A Scenario Reader should be able to read the description line for a Scenario Outline if it is on a single line") {
-    Given("a Scenario Outline with a single line description")
-    When("the Scenario Outline is read")
-    Then("the Scenario class has the correct description")
-    And("the Scenario class has the 'outline' flag set")
-    pending
-  }
-
-  test("A Scenario Reader should be able to read the description line for a Scenario Outline if it spans multiple lines") {
-    Given("a Scenario Outline with a multi line description")
-    When("the Scenario Outline is read")
-    Then("the Scenario class has the correct description")
-    And("the Scenario class has the 'outline' flag set")
-    pending
-  }
-
-  test("A Scenario Reader will not contain any example data if the Scenario is not a Scenario Outline if none is specified") {
-    Given("a basic Scenario without examples")
-    When("the Scenario is read")
-    Then("the Scenario class does not have any examples")
-    And("the 'outline' flag is 'false'")
-    pending
-  }
-
-  test("A Scenario Reader will not contain any example data if the Scenario is not a Scenario Outline even if some is specified") {
-    Given("a basic Scenario which includes an examples section")
-    When("the Scenario is read")
-    Then("the Scenario class does not have any examples")
-    And("the 'outline' flag is 'false'")
-    pending
-  }
-
-  test("A Scenario Reader will contain all example data lines if the Scenario is a Scenario Outline with Examples specified") {
-    Given("a Scenario Outline which includes an examples section")
-    When("the Scenario Outline is read")
-    Then("the Scenario class contains the expected examples")
-    And("the 'outline' flag is 'true'")
-    pending
-  }
-
-  test("A Scenario Reader will contain no example data lines if the Scenario is a Scenario Outline without Examples specified") {
-    Given("a Scenario Outline which does not have examples section")
-    When("the Scenario Outline is read")
-    Then("the Scenario class contains no examples")
-    And("the 'outline' flag is 'true'")
-    pending
-  }
-
 }
