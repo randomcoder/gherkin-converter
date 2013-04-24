@@ -28,4 +28,4 @@ sealed abstract class GherkinComponent(val identifier: String, tags: Seq[String]
 
 case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String, tags: Seq[String], scenarios: Seq[Scenario]) extends GherkinComponent("Feature", tags)
 
-case class Scenario(description: String, tags: Seq[String]) extends GherkinComponent("Scenario", tags)
+case class Scenario(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String]) extends GherkinComponent("Scenario", tags)
