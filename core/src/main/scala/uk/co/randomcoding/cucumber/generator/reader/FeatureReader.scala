@@ -41,7 +41,7 @@ object FeatureReader {
    * Parse the feature details from the file input as a sequence of strings
    */
   def read(lines: Seq[String]): Feature = {
-    val builder = new FeatureBuilder()
+    val builder = new FeatureBuilder
     val parser = new Parser(builder)
     parser.parse(lines.mkString("\n"), "", 0)
 

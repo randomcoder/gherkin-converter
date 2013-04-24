@@ -38,7 +38,7 @@ import uk.co.randomcoding.cucumber.generator.gherkin.Feature
  *
  * @author RandomCoder
  */
-class FeatureBuilder() extends Formatter {
+class FeatureBuilder extends Formatter {
   private var overallFeature: GFeature = _
 
   private var scenarios: Seq[GScenario] = Nil
@@ -73,16 +73,20 @@ class FeatureBuilder() extends Formatter {
   }
 
   override def scenario(scenario: gherkin.formatter.model.Scenario) {
-    scenarioBuilder match {
-      case Some(builder) => scenarios = scenarios :+ builder.build
-      case _ => // do nothing
-    }
+    buildCurrentScenario()
 
     val builder = new ScenarioBuilder
-    builder.description(scenario.getDescription)
+    builder.description(scenario.getName)
     scenario.getTags.map(t => builder.tag(t.getName))
     scenarioBuilder = Some(builder)
-    //scenarios = scenarios :+ GScenario(scenario.getDescription, scenario.getTags.map(_.getName))
+  }
+
+
+  private[this] def buildCurrentScenario() {
+    scenarioBuilder match {
+      case Some(sBuilder) => scenarios = scenarios :+ sBuilder.build
+      case _ => // do nothing
+    }
   }
 
   override def scenarioOutline(scenarioOutline: gherkin.formatter.model.ScenarioOutline) {
@@ -94,28 +98,24 @@ class FeatureBuilder() extends Formatter {
   }
 
   override def step(step: Step) {
-    println(step.toString)
-    // not implemented yet
+    scenarioBuilder.get.step(step)
   }
 
   override def eof() {
-    // Do nothing
+    buildCurrentScenario()
   }
 
   override def syntaxError(p1: String, p2: String, p3: util.List[String], p4: String, p5: Integer) {}
 
   override def done() {
     // not implemented yet
-    println("Done")
   }
 
   override def close() {
-    println("Close")
     // not implemented yet
   }
 
   /**
-   *
    * @return The generated feature
    */
   def build: Feature = overallFeature.copy(scenarios = scenarios)
