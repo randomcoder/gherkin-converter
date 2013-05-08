@@ -26,7 +26,7 @@ import sbt._
 object Dependencies {
 
   // Define version numbers of libraries that could (and should) change here
-  val grizzledVersion = "1.0.1"
+  val scalaLoggingVersion = "1.0.1"
   val scalatestVersion = "2.0.M5b"
   val logbackVersion = "1.0.0"
   val jodaTimeVersion = "2.1"
@@ -54,14 +54,16 @@ object Dependencies {
 
   // Logging. Uses logback as the logging backend, with groovy for configuration.
   // Grizzled is used to provide access to the logging API in code
-  val grizzledSlf4j = "org.clapper" %% "grizzled-slf4j" % grizzledVersion
+  val scalaLogging = "com.typesafe" %% "scalalogging-slf4j" % scalaLoggingVersion excludeAll (
+    excludeLog4j)
+
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
 
   val gherkin = "info.cukes" % "gherkin" % "2.11.6"
 
   // Define the commonly used dependency collections
-  val loggingDependencies = Seq(logback, groovy, grizzledSlf4j)
+  val loggingDependencies = Seq(logback, groovy, scalaLogging)
   val jodaTimeDependencies = Seq(jodaTime, jodaConvert)
   val testDependencies = Seq(scalatest)
 }

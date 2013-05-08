@@ -15,8 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- * RandomCoder - initial API and implementation and/or initial documentation
+ *   RandomCoder - initial API and implementation and/or initial documentation
  */
+
 package uk.co.randomcoding.cucumber.generator.reader
 
 import uk.co.randomcoding.cucumber.generator.gherkin._

@@ -30,6 +30,7 @@ import scala.collection.JavaConversions._
 import uk.co.randomcoding.cucumber.generator.gherkin.{Scenario => GScenario, Feature => GFeature}
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
 import uk.co.randomcoding.cucumber.generator.gherkin.Feature
+import com.typesafe.scalalogging.slf4j.Logging
 
 
 /**
@@ -38,7 +39,7 @@ import uk.co.randomcoding.cucumber.generator.gherkin.Feature
  *
  * @author RandomCoder
  */
-class FeatureBuilder extends Formatter {
+class FeatureBuilder extends Formatter with Logging {
   private var overallFeature: GFeature = _
 
   private var scenarios: Seq[GScenario] = Nil
@@ -60,7 +61,12 @@ class FeatureBuilder extends Formatter {
       case other => (feature.getName +: description.slice(0, inOrderToStart)).mkString("\n")
     }
 
-    overallFeature = GFeature(featureName, featurePartLines(description.slice(inOrderToStart, asAStart), IN_ORDER_TO), featurePartLines(description.slice(asAStart, iWantToStart), AS_A), featurePartLines(description.drop(iWantToStart), I_WANT_TO), feature.getTags.map(_.getName), Nil)
+    val inOrderToLines = featurePartLines(description.slice(inOrderToStart, asAStart), IN_ORDER_TO)
+    val asALines = featurePartLines(description.slice(asAStart, iWantToStart), AS_A)
+    val iWantToLines = featurePartLines(description.drop(iWantToStart), I_WANT_TO)
+    val tags = feature.getTags.map(_.getName)
+
+    overallFeature = GFeature(featureName, inOrderToLines, asALines, iWantToLines, tags, Nil)
   }
 
   private def featurePartLines(lines: Seq[String], lineIdentifier: String): String = lines.map(_.trim match {
