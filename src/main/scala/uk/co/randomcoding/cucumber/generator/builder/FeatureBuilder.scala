@@ -26,7 +26,7 @@ import com.typesafe.scalalogging.LazyLogging
 import gherkin.formatter.Formatter
 import gherkin.formatter.model._
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import uk.co.randomcoding.cucumber.generator.gherkin.{Feature => GFeature, Scenario => GScenario}
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
 import uk.co.randomcoding.cucumber.generator.gherkin.Feature
@@ -57,13 +57,13 @@ class FeatureBuilder extends Formatter with LazyLogging {
 
     val featureName = inOrderToStart match {
       case 0 => feature.getName
-      case other => (feature.getName +: description.slice(0, inOrderToStart)).mkString("\n")
+      case _ => (feature.getName +: description.slice(0, inOrderToStart)).mkString("\n")
     }
 
     val inOrderToLines = featurePartLines(description.slice(inOrderToStart, asAStart), IN_ORDER_TO)
     val asALines = featurePartLines(description.slice(asAStart, iWantToStart), AS_A)
     val iWantToLines = featurePartLines(description.drop(iWantToStart), I_WANT_TO)
-    val tags = feature.getTags.map(_.getName)
+    val tags = feature.getTags.asScala.toList.map(_.getName)
 
     overallFeature = GFeature(featureName, inOrderToLines, asALines, iWantToLines, tags, Nil)
   }
@@ -82,7 +82,7 @@ class FeatureBuilder extends Formatter with LazyLogging {
 
     val builder = new ScenarioBuilder
     builder.description(scenario.getName)
-    scenario.getTags.map(t => builder.tag(t.getName))
+    scenario.getTags.asScala.toList.foreach(t => builder.tag(t.getName))
     scenarioBuilder = Some(builder)
   }
 
