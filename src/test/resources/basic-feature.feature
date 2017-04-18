@@ -10,7 +10,6 @@ I want to be able to read details from a file
     When I do something
     Then I get the result I expected
 
-  @scenario-tag-2
   Scenario: Another simple scenario that has single line steps
     Given a second precondition
     When I do something else

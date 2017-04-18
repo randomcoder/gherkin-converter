@@ -41,7 +41,7 @@ class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.scenarios should be(Seq(simpleScenario))
   }
 
-  it should "Read a Scenario from a Feature that has two simple Scenarios" in {
+  it should "Read a Scenario from a Feature that has two simple Scenarios only one of which has tags" in {
     val feature = FeatureReader.read("/basic-feature.feature")
     feature.scenarios should be(Seq(basicScenario1, basicScenario2))
   }
@@ -56,7 +56,7 @@ class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.scenarios should be(Seq(simpleScenarioWithButs))
   }
 
-  private[this] implicit def pathToLInes(p: String): Seq[String] = Source.fromInputStream(getClass.getResourceAsStream(p)).getLines().toSeq
+  private[this] implicit def pathToLInes(p: String): List[String] = Source.fromInputStream(getClass.getResourceAsStream(p)).getLines().toList
 
   private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a simple precondition"), Seq("When I do something easy"), Seq("Then I get the result I expected"))
@@ -74,6 +74,6 @@ class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
   private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))
 
-  private[this] val basicScenario2 = Scenario("Another simple scenario that has single line steps", Seq("@scenario-tag-2"),
+  private[this] val basicScenario2 = Scenario("Another simple scenario that has single line steps", Nil,
     Seq("Given a second precondition"), Seq("When I do something else"), Seq("Then I also get the result I expected"))
 }

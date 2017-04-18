@@ -29,7 +29,7 @@ import scala.language.implicitConversions
 class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
 
   behaviour of "Feature Reader"
-  
+
   it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario" in {
     val description = s"""$singleLineFeatureDescription
     |
@@ -42,18 +42,6 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.iWantTo should be(simpleIWantTo)
   }
 
-  it should "Read the Feature details from a feature that is described all in multiple lines and ends with a Scenario" in {
-    val description = s"""$multiLineFeatureDescription
-    |
-    |$SCENARIO""".stripMargin
-
-    val feature = FeatureReader.read(description)
-    feature.description should be(multiLineDescription)
-    feature.inOrderTo should be(multiLineInOrderTo)
-    feature.asA should be(multiLineAsA)
-    feature.iWantTo should be(multiLineIWantTo)
-  }
-
   it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario Outline" in {
     val description = s"""$singleLineFeatureDescription
     |
@@ -64,18 +52,6 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.inOrderTo should be(simpleInOrderTo)
     feature.asA should be(simpleAsA)
     feature.iWantTo should be(simpleIWantTo)
-  }
-
-  it should "Read the Feature details from a feature that is described all in multiple lines and ends with a Scenario Outline"in {
-    val description = s"""$multiLineFeatureDescription
-    |
-    |$SCENARIO_OUTLINE""".stripMargin
-
-    val feature = FeatureReader.read(description)
-    feature.description should be(multiLineDescription)
-    feature.inOrderTo should be(multiLineInOrderTo)
-    feature.asA should be(multiLineAsA)
-    feature.iWantTo should be(multiLineIWantTo)
   }
 
   it should "Read the Feature details from a feature that is described all in single lines and the first Scenario (or Outline) has a tag"in {
@@ -92,22 +68,6 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.inOrderTo should be(simpleInOrderTo)
     feature.asA should be(simpleAsA)
     feature.iWantTo should be(simpleIWantTo)
-  }
-
-  it should "Read the Feature details from a feature that is described all in multiple lines and and the first Scenario (or Outline) has a tag"in {
-    val description = s"""$multiLineFeatureDescription
-    |
-    |@b-tag
-    |$SCENARIO A Scenario
-    |$GIVEN Given
-    |$WHEN When
-    |$THEN Then""".stripMargin
-
-    val feature = FeatureReader.read(description)
-    feature.description should be(multiLineDescription)
-    feature.inOrderTo should be(multiLineInOrderTo)
-    feature.asA should be(multiLineAsA)
-    feature.iWantTo should be(multiLineIWantTo)
   }
 
   it should "Read a single tag associated to a Feature"in {
@@ -143,7 +103,7 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.scenarios should have size 2
   }
 
-  private[this] implicit def stringToLines(s: String): Seq[String] = Source.fromString(s).getLines().toSeq
+  private[this] implicit def stringToLines(s: String): List[String] = Source.fromString(s).getLines().toList
 
   private[this] val simpleDescription = "A Simple feature that is described on a single line"
   private[this] val simpleInOrderTo = "test the running of the feature reader"
@@ -154,18 +114,4 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
                                         |In order to $simpleInOrderTo
                                         |As a $simpleAsA
                                         |I want to $simpleIWantTo""".stripMargin
-
-  private[this] val multiLineDescription = """A more complex description of a feature.
-                               		|It spans two lines""".stripMargin
-  private[this] val multiLineInOrderTo = """long in order to
-                             |over two lines""".stripMargin
-  private[this] val multiLineAsA = """long description of who I am
-                       |and why I am the one to do this""".stripMargin
-  private[this] val multiLineIWantTo = """long list of the things I want to be able to do.
-                           |Thing 1, Thing 2 and Thing 3""".stripMargin
-
-  private[this] val multiLineFeatureDescription = s"""Feature: $multiLineDescription
-                                       |In order to $multiLineInOrderTo
-                                       |As a $multiLineAsA
-                                       |I want to $multiLineIWantTo""".stripMargin
 }

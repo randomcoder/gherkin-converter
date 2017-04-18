@@ -34,6 +34,8 @@ object GherkinComponentIdentifier {
 
   val I_WANT_TO = "I want to"
 
+  val I_WANT = "I want"
+
   val SCENARIO = "Scenario:"
 
   val SCENARIO_OUTLINE = "Scenario Outline:"

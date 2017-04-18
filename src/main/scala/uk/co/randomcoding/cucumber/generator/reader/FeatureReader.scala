@@ -20,9 +20,8 @@
 
 package uk.co.randomcoding.cucumber.generator.reader
 
+import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
 import uk.co.randomcoding.cucumber.generator.gherkin._
-import gherkin.parser.Parser
-import uk.co.randomcoding.cucumber.generator.builder.FeatureBuilder
 
 /**
  * Reads the Feature level details from a feature description
@@ -41,12 +40,49 @@ object FeatureReader {
   /**
    * Parse the feature details from the file input as a sequence of strings
    */
-  def read(lines: Seq[String]): Feature = {
-    val builder = new FeatureBuilder
-    val parser = new Parser(builder)
-    parser.parse(lines.mkString("\n"), "", 0)
-
-    builder.build
+  def read(lines: List[String]): Feature = {
+    readFeature(lines.map(_.trim), Feature("", "", "", "", Nil, Nil))
   }
 
+  private[this] def readFeature(featureLines: Seq[String], feature: Feature): Feature = {
+    featureLines match {
+      case Nil => feature
+      case featureLine :: rest if featureLine.startsWith(FEATURE) => readFeature(rest, feature.copy(description = featureLine.drop(FEATURE.length).trim))
+      case asALine :: rest if asALine.startsWith(AS_A) => readFeature(rest, feature.copy(asA = asALine.drop(AS_A.length).trim))
+      case inOrderToLine :: rest if inOrderToLine.startsWith(IN_ORDER_TO) => readFeature(rest, feature.copy(inOrderTo = inOrderToLine.drop(IN_ORDER_TO.length).trim))
+      case iWantToLine :: rest if iWantToLine.startsWith(I_WANT_TO) => readFeature(rest, feature.copy(iWantTo = iWantToLine.drop(I_WANT_TO.length).trim))
+      case iWantLine :: rest if iWantLine.startsWith(I_WANT) => readFeature(rest, feature.copy(iWantTo = iWantLine.drop(I_WANT.length).trim))
+      case featureTagsLine :: rest if featureTagsLine.startsWith("@") && feature.description.isEmpty => readFeature(rest, feature.copy(tags = featureTagsLine.split("""\s+""").toSeq))
+      case scenarioLines if feature.iWantTo.nonEmpty && feature.scenarios.isEmpty => feature.copy(scenarios = readScenarios(scenarioLines, Nil))
+      case _ :: rest => readFeature(rest, feature)
+    }
+  }
+
+  private[this] def readScenarios(scenarioLines: Seq[String], scenarios: Seq[Scenario]): Seq[Scenario] = {
+    scenarioLines match {
+      case Nil => scenarios
+      case tagsLine :: rest if tagsLine.startsWith("@") => {
+        val theTags = tagsLine.split("""\s""")
+        val (s, restOfLines) = readScenario(rest, Scenario("", theTags, Nil, Nil, Nil))
+        readScenarios(restOfLines, scenarios :+ s)
+      }
+      case scenarioLine :: rest if scenarioLine.trim.startsWith(SCENARIO) => {
+        val (s, restOfLines) = readScenario(rest, scenario = Scenario(scenarioLine.drop(SCENARIO.length).trim, Nil, Nil, Nil, Nil))
+        readScenarios(restOfLines, scenarios :+ s)
+      }
+      case _ :: rest => readScenarios(rest, scenarios)
+    }
+  }
+
+  private[this] def readScenario(scenarioLines: Seq[String], scenario: Scenario): (Scenario, Seq[String]) = {
+    scenarioLines match {
+      case Nil => (scenario, Nil)
+      case scenarioLine :: rest if scenarioLine.startsWith(SCENARIO) => readScenario(rest, scenario.copy(description = scenarioLine.drop(SCENARIO.length).trim))
+      case givenLine :: rest if givenLine.startsWith(GIVEN) => readScenario(rest, scenario.copy(givens = scenario.givens :+ givenLine))
+      case whenLine :: rest if whenLine.startsWith(WHEN) => readScenario(rest, scenario.copy(whens = scenario.whens :+ whenLine))
+      case thenLine :: rest if thenLine.startsWith(THEN) => readScenario(rest, scenario.copy(thens = scenario.thens :+ thenLine))
+      case "" :: rest => (scenario, rest)
+      case _ :: rest => readScenario(rest, scenario)
+    }
+  }
 }
