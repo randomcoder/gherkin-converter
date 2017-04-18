@@ -19,10 +19,10 @@
  */
 package uk.co.randomcoding.cucumber.generator.reader
 
-import scala.io.Source
-import uk.co.randomcoding.cucumber.generator.FunTest
-import uk.co.randomcoding.cucumber.generator.FeatureTestHelpers._
+import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
+
+import scala.io.Source
 
 /**
  * Tests to define and check the capabilities of the feature reader to read a
@@ -30,33 +30,11 @@ import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier.
  *
  * @author RandomCoder
  */
-class CucumberFeatureReaderTest extends FunTest {
+class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
 
-  val simpleDescription = "A Simple feature that is described on a single line"
-  val simpleInOrderTo = "test the running of the feature reader"
-  val simpleAsA = "person who is writing the code"
-  val simpleIWantTo = "test it with simple single line descriptions"
-
-  val singleLineFeatureDescription = s"""Feature: $simpleDescription
-    |In order to $simpleInOrderTo
-    |As a $simpleAsA
-    |I want to $simpleIWantTo""".stripMargin
-
-  val multiLineDescription = """A more complex description of a feature.
-  		|It spans two lines""".stripMargin
-  val multiLineInOrderTo = """long in order to
-    |over two lines""".stripMargin
-  val multiLineAsA = """long description of who I am
-    |and why I am the one to do this""".stripMargin
-  val multiLineIWantTo = """long list of the things I want to be able to do.
-    |Thing 1, Thing 2 and Thing 3""".stripMargin
-
-  val multiLineFeatureDescription = s"""Feature: $multiLineDescription
-    |In order to $multiLineInOrderTo
-    |As a $multiLineAsA
-    |I want to $multiLineIWantTo""".stripMargin
-
-  test("A Feature Reader should be able to read the Feature details from a feature that is described all in single lines and ends with a Scenario") {
+  behaviour of "Feature Reader"
+  
+  it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario" in {
     Given("a Feature with a single line description")
     val description = s"""$singleLineFeatureDescription
     |
@@ -72,7 +50,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be(simpleIWantTo)
   }
 
-  test("A Feature Reader should be able to read the Feature details from a feature that is described all in multiple lines and ends with a Scenario") {
+  it should "Read the Feature details from a feature that is described all in multiple lines and ends with a Scenario" in {
     Given("a Feature with a multi line description")
     val description = s"""$multiLineFeatureDescription
     |
@@ -88,7 +66,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be(multiLineIWantTo)
   }
 
-  test("A Feature Reader should be able to read the Feature details from a feature that is described all in single lines and ends with a Scenario Outline") {
+  it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario Outline" in {
     Given("a Feature with a single line description")
     val description = s"""$singleLineFeatureDescription
     |
@@ -104,7 +82,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be(simpleIWantTo)
   }
 
-  test("A Feature Reader should be able to read the Feature details from a feature that is described all in multiple lines and ends with a Scenario Outline") {
+  it should "Read the Feature details from a feature that is described all in multiple lines and ends with a Scenario Outline"in {
     Given("a Feature with a multi line description")
     val description = s"""$multiLineFeatureDescription
     |
@@ -120,7 +98,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be(multiLineIWantTo)
   }
 
-  test("A Feature Reader should be able to read the Feature details from a feature that is described all in single lines and the first Scenario (or Outline) has a tag") {
+  it should "Read the Feature details from a feature that is described all in single lines and the first Scenario (or Outline) has a tag"in {
     Given("a Feature with a single line description")
     val description = s"""$singleLineFeatureDescription
     |
@@ -140,7 +118,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be(simpleIWantTo)
   }
 
-  test("A Feature Reader should be able to read the Feature details from a feature that is described all in multiple lines and and the first Scenario (or Outline) has a tag") {
+  it should "Read the Feature details from a feature that is described all in multiple lines and and the first Scenario (or Outline) has a tag"in {
     Given("a Feature with a multi line description")
     val description = s"""$multiLineFeatureDescription
     |
@@ -160,7 +138,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be(multiLineIWantTo)
   }
 
-  test("A Feature Reader should be able to read a single tag associated to a Feature") {
+  it should "Read a single tag associated to a Feature"in {
     Given("a Feature with a single tag")
     val description = s"""@start-tag
     |$singleLineFeatureDescription""".stripMargin
@@ -171,7 +149,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.tags should be (Seq("@start-tag"))
   }
 
-  test("A Feature Reader should be able to read a multiple tags associated to a Feature") {
+  it should "Read a multiple tags associated to a Feature"in {
     Given("a Feature with a multiple tags")
     val description = s"""@start-tag @feature-tag @final-tag
     |$singleLineFeatureDescription""".stripMargin
@@ -182,7 +160,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.tags should be (Seq("@start-tag", "@feature-tag", "@final-tag"))
   }
 
-  test("A Feature Reader should be able to read the basic feature details from a file"){
+  it should "Read the basic feature details from a file" in {
     Given("a simple feature file")
     val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
 
@@ -196,7 +174,7 @@ class CucumberFeatureReaderTest extends FunTest {
     feature.iWantTo should be("be able to read details from a file")
   }
 
-  test("A Feature Reader should be able to correctly identify the number of different scenarios present under the feature"){
+  it should "A Feature Reader should be able to correctly identify the number of different scenarios present under the feature" in {
     Given("a feature with two simple scenarios")
     val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
 
@@ -204,6 +182,30 @@ class CucumberFeatureReaderTest extends FunTest {
     val feature = FeatureReader.read(file)
 
     Then("the feature contains 2 scenarios")
-    feature.scenarios.size should be(2)
+    feature.scenarios should have size 2
   }
+
+  private[this] val simpleDescription = "A Simple feature that is described on a single line"
+  private[this] val simpleInOrderTo = "test the running of the feature reader"
+  private[this] val simpleAsA = "person who is writing the code"
+  private[this] val simpleIWantTo = "test it with simple single line descriptions"
+
+  private[this] val singleLineFeatureDescription = s"""Feature: $simpleDescription
+                                        |In order to $simpleInOrderTo
+                                        |As a $simpleAsA
+                                        |I want to $simpleIWantTo""".stripMargin
+
+  private[this] val multiLineDescription = """A more complex description of a feature.
+                               		|It spans two lines""".stripMargin
+  private[this] val multiLineInOrderTo = """long in order to
+                             |over two lines""".stripMargin
+  private[this] val multiLineAsA = """long description of who I am
+                       |and why I am the one to do this""".stripMargin
+  private[this] val multiLineIWantTo = """long list of the things I want to be able to do.
+                           |Thing 1, Thing 2 and Thing 3""".stripMargin
+
+  private[this] val multiLineFeatureDescription = s"""Feature: $multiLineDescription
+                                       |In order to $multiLineInOrderTo
+                                       |As a $multiLineAsA
+                                       |I want to $multiLineIWantTo""".stripMargin
 }

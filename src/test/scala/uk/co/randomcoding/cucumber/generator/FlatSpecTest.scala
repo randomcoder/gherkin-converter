@@ -19,11 +19,11 @@
  */
 package uk.co.randomcoding.cucumber.generator
 
-import org.scalatest.{FunSuite, GivenWhenThen, Matchers}
+import org.scalatest._
 
 /**
- * Aggregates commonly used test imports
- *
- * @author RandomCoder
- */
-trait FunTest extends FunSuite with Matchers with GivenWhenThen
+  * Common base for Spec classes
+  */
+trait FlatSpecTest extends FlatSpec with Matchers with GivenWhenThen with AppendedClues {
+  val behaviour = new BehaviorWord
+}

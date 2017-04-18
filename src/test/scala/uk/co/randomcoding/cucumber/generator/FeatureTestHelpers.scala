@@ -30,6 +30,6 @@ import scala.language.implicitConversions
  *
  * @author RandomCoder
  */
-object FeatureTestHelpers {
+trait FeatureTestHelpers {
   implicit def sourceToLines(s: Source): List[String] = s.getLines().toList
 }
