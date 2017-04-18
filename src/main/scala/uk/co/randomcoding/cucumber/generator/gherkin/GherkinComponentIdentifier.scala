@@ -45,4 +45,6 @@ object GherkinComponentIdentifier {
   val THEN = "Then"
 
   val AND = "And"
+
+  val BUT = "But"
 }

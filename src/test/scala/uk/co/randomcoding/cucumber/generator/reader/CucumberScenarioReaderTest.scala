@@ -61,6 +61,14 @@ class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.scenarios should be(Seq(simpleScenarioWithAnds))
   }
 
+  it should "Read a Scenario from a Feature that has a single Scenario with each step having 'Buts'" in {
+    Given("a Feature Reader set to read a feature file with a single scenario where each step also has a 'But'")
+    val source = Source.fromInputStream(getClass.getResourceAsStream("/single-scenario-with-buts.feature"))
+    When("the feature file is parsed")
+    val feature = FeatureReader.read(source)
+    Then("it contains a single Scenario with the expected properties")
+    feature.scenarios should be(Seq(simpleScenarioWithButs))
+  }
 
   private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a simple precondition"), Seq("When I do something easy"), Seq("Then I get the result I expected"))
@@ -69,6 +77,11 @@ class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
     Seq("Given a simple precondition", "And another simple precondition"),
     Seq("When I do something easy", "And do something tricky"),
     Seq("Then I get the result I expected", "And nothing else happens"))
+
+  private[this] val simpleScenarioWithButs = Scenario("A simple scenario where all steps have a 'but'", Seq("@scenario-and-tag-2"),
+    Seq("Given a simple precondition", "But another simple precondition"),
+    Seq("When I do something easy", "But do something tricky"),
+    Seq("Then I get the result I expected", "But nothing else happens"))
 
   private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))

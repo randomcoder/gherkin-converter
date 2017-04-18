@@ -49,9 +49,9 @@ class ScenarioBuilder {
       case GIVEN => givens = givens :+ stepText
       case WHEN => whens = whens :+ stepText
       case THEN => thens = thens :+ stepText
-      case AND => (givens.size, whens.size, thens.size) match {
-        case (_, 0, 0) => givens = givens :+ stepText
-        case (_, _, 0) => whens = whens :+ stepText
+      case AND | BUT => (givens, whens, thens) match {
+        case (_, Nil, Nil) => givens = givens :+ stepText
+        case (_, _, Nil) => whens = whens :+ stepText
         case (_, _, _) => thens = thens :+ stepText
       }
     }
