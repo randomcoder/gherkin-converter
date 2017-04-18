@@ -81,6 +81,11 @@ object FeatureReader {
       case givenLine :: rest if givenLine.startsWith(GIVEN) => readScenario(rest, scenario.copy(givens = scenario.givens :+ givenLine))
       case whenLine :: rest if whenLine.startsWith(WHEN) => readScenario(rest, scenario.copy(whens = scenario.whens :+ whenLine))
       case thenLine :: rest if thenLine.startsWith(THEN) => readScenario(rest, scenario.copy(thens = scenario.thens :+ thenLine))
+      case andOrButLine :: rest if andOrButLine.startsWith(AND) || andOrButLine.startsWith(BUT) => scenario match {
+        case Scenario(_, _, _, Nil, Nil) => readScenario(rest, scenario.copy(givens = scenario.givens :+ andOrButLine))
+        case Scenario(_, _, _, _, Nil) => readScenario(rest, scenario.copy(whens = scenario.whens :+ andOrButLine))
+        case _ => readScenario(rest, scenario.copy(thens = scenario.thens :+ andOrButLine))
+      }
       case "" :: rest => (scenario, rest)
       case _ :: rest => readScenario(rest, scenario)
     }
