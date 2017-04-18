@@ -24,6 +24,6 @@ import org.scalatest._
 /**
   * Common base for Spec classes
   */
-trait FlatSpecTest extends FlatSpec with Matchers with GivenWhenThen with AppendedClues {
+trait FlatSpecTest extends FlatSpec with Matchers with AppendedClues {
   val behaviour = new BehaviorWord
 }

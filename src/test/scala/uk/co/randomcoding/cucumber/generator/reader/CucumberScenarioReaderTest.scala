@@ -24,6 +24,8 @@ import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
 import scala.io.Source
 
+import scala.language.implicitConversions
+
 /**
  * Tests for the correct reading of Scenario information including tags and Example data
  * for Scenario Outlines
@@ -35,40 +37,26 @@ class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
   behaviour of "A Feature Reader"
 
   it should "Read a Scenario from a Feature that has a single Scenario" in {
-    Given("a Feature Reader set to read a feature file with a single scenario containing only Given When and Then")
-    val source = Source.fromInputStream(getClass.getResourceAsStream("/single-scenario.feature"))
-    When("the feature file is parsed")
-    val feature = FeatureReader.read(source)
-    Then("it contains a single Scenario with the expected properties")
+    val feature = FeatureReader.read("/single-scenario.feature")
     feature.scenarios should be(Seq(simpleScenario))
   }
 
   it should "Read a Scenario from a Feature that has two simple Scenarios" in {
-    Given("a Feature Reader set to read a feature file with two simple scenarios containing only Given When and Then")
-    val source = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
-    When("the feature file is parsed")
-    val feature = FeatureReader.read(source)
-    Then("it contains a single Scenario with the expected properties")
+    val feature = FeatureReader.read("/basic-feature.feature")
     feature.scenarios should be(Seq(basicScenario1, basicScenario2))
   }
 
   it should "Read a Scenario from a Feature that has a single Scenario with each step having 'Ands'" in {
-    Given("a Feature Reader set to read a feature file with a single scenario where each step also has an 'And'")
-    val source = Source.fromInputStream(getClass.getResourceAsStream("/single-scenario-with-ands.feature"))
-    When("the feature file is parsed")
-    val feature = FeatureReader.read(source)
-    Then("it contains a single Scenario with the expected properties")
+    val feature = FeatureReader.read("/single-scenario-with-ands.feature")
     feature.scenarios should be(Seq(simpleScenarioWithAnds))
   }
 
   it should "Read a Scenario from a Feature that has a single Scenario with each step having 'Buts'" in {
-    Given("a Feature Reader set to read a feature file with a single scenario where each step also has a 'But'")
-    val source = Source.fromInputStream(getClass.getResourceAsStream("/single-scenario-with-buts.feature"))
-    When("the feature file is parsed")
-    val feature = FeatureReader.read(source)
-    Then("it contains a single Scenario with the expected properties")
+    val feature = FeatureReader.read("/single-scenario-with-buts.feature")
     feature.scenarios should be(Seq(simpleScenarioWithButs))
   }
+
+  private[this] implicit def pathToLInes(p: String): Seq[String] = Source.fromInputStream(getClass.getResourceAsStream(p)).getLines().toSeq
 
   private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a simple precondition"), Seq("When I do something easy"), Seq("Then I get the result I expected"))

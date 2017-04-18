@@ -24,26 +24,18 @@ import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier.
 
 import scala.io.Source
 
-/**
- * Tests to define and check the capabilities of the feature reader to read a
- * feature, its tags and detail lines
- *
- * @author RandomCoder
- */
+import scala.language.implicitConversions
+
 class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
 
   behaviour of "Feature Reader"
   
   it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario" in {
-    Given("a Feature with a single line description")
     val description = s"""$singleLineFeatureDescription
     |
     |$SCENARIO""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-
-    Then("the generated Feature class contains the correct description")
+    val feature = FeatureReader.read(description)
     feature.description should be(simpleDescription)
     feature.inOrderTo should be(simpleInOrderTo)
     feature.asA should be(simpleAsA)
@@ -51,15 +43,11 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read the Feature details from a feature that is described all in multiple lines and ends with a Scenario" in {
-    Given("a Feature with a multi line description")
     val description = s"""$multiLineFeatureDescription
     |
     |$SCENARIO""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-
-    Then("the generated Feature class contains the correct description")
+    val feature = FeatureReader.read(description)
     feature.description should be(multiLineDescription)
     feature.inOrderTo should be(multiLineInOrderTo)
     feature.asA should be(multiLineAsA)
@@ -67,15 +55,11 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario Outline" in {
-    Given("a Feature with a single line description")
     val description = s"""$singleLineFeatureDescription
     |
     |$SCENARIO_OUTLINE""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-
-    Then("the generated Feature class contains the correct description")
+    val feature = FeatureReader.read(description)
     feature.description should be(simpleDescription)
     feature.inOrderTo should be(simpleInOrderTo)
     feature.asA should be(simpleAsA)
@@ -83,15 +67,11 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read the Feature details from a feature that is described all in multiple lines and ends with a Scenario Outline"in {
-    Given("a Feature with a multi line description")
     val description = s"""$multiLineFeatureDescription
     |
     |$SCENARIO_OUTLINE""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-
-    Then("the generated Feature class contains the correct description")
+    val feature = FeatureReader.read(description)
     feature.description should be(multiLineDescription)
     feature.inOrderTo should be(multiLineInOrderTo)
     feature.asA should be(multiLineAsA)
@@ -99,7 +79,6 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read the Feature details from a feature that is described all in single lines and the first Scenario (or Outline) has a tag"in {
-    Given("a Feature with a single line description")
     val description = s"""$singleLineFeatureDescription
     |
     |@a-tag
@@ -108,10 +87,7 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
     |$WHEN When
     |$THEN Then""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-
-    Then("the generated Feature class contains the correct description")
+    val feature = FeatureReader.read(description)
     feature.description should be(simpleDescription)
     feature.inOrderTo should be(simpleInOrderTo)
     feature.asA should be(simpleAsA)
@@ -119,7 +95,6 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read the Feature details from a feature that is described all in multiple lines and and the first Scenario (or Outline) has a tag"in {
-    Given("a Feature with a multi line description")
     val description = s"""$multiLineFeatureDescription
     |
     |@b-tag
@@ -128,10 +103,7 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
     |$WHEN When
     |$THEN Then""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-
-    Then("the generated Feature class contains the correct description")
+    val feature = FeatureReader.read(description)
     feature.description should be(multiLineDescription)
     feature.inOrderTo should be(multiLineInOrderTo)
     feature.asA should be(multiLineAsA)
@@ -139,51 +111,39 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read a single tag associated to a Feature"in {
-    Given("a Feature with a single tag")
     val description = s"""@start-tag
     |$singleLineFeatureDescription""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-    Then("the Feature class has the correct tag")
+    val feature = FeatureReader.read(description)
     feature.tags should be (Seq("@start-tag"))
   }
 
   it should "Read a multiple tags associated to a Feature"in {
-    Given("a Feature with a multiple tags")
     val description = s"""@start-tag @feature-tag @final-tag
     |$singleLineFeatureDescription""".stripMargin
 
-    When("the Feature is read")
-    val feature = FeatureReader.read(Source.fromString(description))
-    Then("the Feature class has the correct tag")
+    val feature = FeatureReader.read(description)
     feature.tags should be (Seq("@start-tag", "@feature-tag", "@final-tag"))
   }
 
   it should "Read the basic feature details from a file" in {
-    Given("a simple feature file")
     val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
 
-    When("the file is read")
     val feature = FeatureReader.read(file)
-
-    Then("The feature has the expected details and tags")
     feature.description should be ("The Feature Reader should be able to read basic feature files that have simple scenarios in.")
     feature.inOrderTo should be("be able to parse feature details from a file")
     feature.asA should be("person developing the library")
     feature.iWantTo should be("be able to read details from a file")
   }
 
-  it should "A Feature Reader should be able to correctly identify the number of different scenarios present under the feature" in {
-    Given("a feature with two simple scenarios")
+  it should "Correctly identify the number of different scenarios present under the feature" in {
     val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
 
-    When("the feature is read")
     val feature = FeatureReader.read(file)
-
-    Then("the feature contains 2 scenarios")
     feature.scenarios should have size 2
   }
+
+  private[this] implicit def stringToLines(s: String): Seq[String] = Source.fromString(s).getLines().toSeq
 
   private[this] val simpleDescription = "A Simple feature that is described on a single line"
   private[this] val simpleInOrderTo = "test the running of the feature reader"
