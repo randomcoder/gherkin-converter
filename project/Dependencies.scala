@@ -26,43 +26,34 @@ import sbt._
 object Dependencies {
 
   // Define version numbers of libraries that could (and should) change here
-  val scalaLoggingVersion = "1.0.1"
-  val scalatestVersion = "2.0.M5b"
-  val logbackVersion = "1.0.0"
-  val jodaTimeVersion = "2.1"
-  val jodaConvertVersion = "1.2"
-  val groovyVersion = "2.0.5"
+  val scalaLoggingVersion = "3.5.0"
+  val scalatestVersion = "3.0.1"
+  val logbackVersion = "1.2.3"
+  val jodaTimeVersion = "2.9.9"
+  val jodaConvertVersion = "1.8.1"
+  val groovyVersion = "2.4.10"
+  val gherkinVersion = "2.12.1"
 
   /**
    * This is used to add an exclude to a dependency. See jodaTime for an example
    */
   val exclude = (org: String, packageName: String) => ExclusionRule(organization = org, name = packageName)
 
-  // We want to exclude log4j where possible as we are using logback for logging
   lazy val excludeLog4j = exclude("log4j", "log4j")
 
-  // Use Joda Time rather than the java.util.Date classes
-  val jodaTime = "joda-time" % "joda-time" % jodaTimeVersion excludeAll (
-    excludeLog4j)
+  val jodaTime = "joda-time" % "joda-time" % jodaTimeVersion excludeAll excludeLog4j
+  val jodaConvert = "org.joda" % "joda-convert" % jodaConvertVersion excludeAll excludeLog4j
 
-  val jodaConvert = "org.joda" % "joda-convert" % jodaConvertVersion excludeAll (
-    excludeLog4j)
+  val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % "test" excludeAll excludeLog4j
 
-  // For testing we use Scalatest and scalatra-scalatest for the web app. See http://scalatest.org
-  val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % "test" excludeAll (
-    excludeLog4j)
-
-  // Logging. Uses logback as the logging backend, with groovy for configuration.
-  // Grizzled is used to provide access to the logging API in code
-  val scalaLogging = "com.typesafe" %% "scalalogging-slf4j" % scalaLoggingVersion excludeAll (
-    excludeLog4j)
+  val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion excludeAll excludeLog4j
 
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
+
   val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
 
-  val gherkin = "info.cukes" % "gherkin" % "2.11.6"
+  val gherkin = "info.cukes" % "gherkin" % gherkinVersion
 
-  // Define the commonly used dependency collections
   val loggingDependencies = Seq(logback, groovy, scalaLogging)
   val jodaTimeDependencies = Seq(jodaTime, jodaConvert)
   val testDependencies = Seq(scalatest)

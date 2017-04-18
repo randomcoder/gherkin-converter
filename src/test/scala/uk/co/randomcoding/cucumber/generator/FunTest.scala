@@ -17,28 +17,13 @@
  * Contributors:
  * RandomCoder - initial API and implementation and/or initial documentation
  */
+package uk.co.randomcoding.cucumber.generator
 
-import sbt._
+import org.scalatest.{FunSuite, GivenWhenThen, Matchers}
 
 /**
- * Shell prompt which show the current project,
- * git branch and build version
+ * Aggregates commonly used test imports
+ *
+ * @author RandomCoder
  */
-object ShellPrompt {
-  object devnull extends ProcessLogger {
-    def info(s: => String) {}
-    def error(s: => String) {}
-    def buffer[T](f: => T): T = f
-  }
-
-  def currBranch = ("git status -sb".lines_!(devnull).headOption).getOrElse("-").stripPrefix("## ")
-
-  val buildShellPrompt = {
-    (state: State) =>
-      {
-        val currProject = Project.extract(state).currentProject.id
-        "%s:%s:%s> ".format(
-          currProject, currBranch, BuildSettings.buildVersion)
-      }
-  }
-}
+trait FunTest extends FunSuite with Matchers with GivenWhenThen

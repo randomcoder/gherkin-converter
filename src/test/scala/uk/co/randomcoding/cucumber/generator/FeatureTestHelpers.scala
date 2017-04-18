@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright (C) 2013 RandomCoder <randomcoder@randomcoding.co.uk>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,15 +18,18 @@
  * Contributors:
  * RandomCoder - initial API and implementation and/or initial documentation
  */
+
 package uk.co.randomcoding.cucumber.generator
 
-import org.scalatest.FunSuite
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.GivenWhenThen
+import scala.io.Source
+
+import scala.language.implicitConversions
 
 /**
- * Aggregates commonly used test imports
+ * Helper functions for tests with Feature Files
  *
  * @author RandomCoder
  */
-trait FunTest extends FunSuite with ShouldMatchers with GivenWhenThen
+object FeatureTestHelpers {
+  implicit def sourceToLines(s: Source): List[String] = s.getLines().toList
+}

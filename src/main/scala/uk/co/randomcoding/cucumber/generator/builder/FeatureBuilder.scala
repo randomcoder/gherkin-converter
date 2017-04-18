@@ -22,15 +22,14 @@ package uk.co.randomcoding.cucumber.generator.builder
 
 import java.util
 
+import com.typesafe.scalalogging.LazyLogging
 import gherkin.formatter.Formatter
 import gherkin.formatter.model._
 
 import scala.collection.JavaConversions._
-
-import uk.co.randomcoding.cucumber.generator.gherkin.{Scenario => GScenario, Feature => GFeature}
+import uk.co.randomcoding.cucumber.generator.gherkin.{Feature => GFeature, Scenario => GScenario}
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
 import uk.co.randomcoding.cucumber.generator.gherkin.Feature
-import com.typesafe.scalalogging.slf4j.Logging
 
 
 /**
@@ -39,7 +38,7 @@ import com.typesafe.scalalogging.slf4j.Logging
  *
  * @author RandomCoder
  */
-class FeatureBuilder extends Formatter with Logging {
+class FeatureBuilder extends Formatter with LazyLogging {
   private var overallFeature: GFeature = _
 
   private var scenarios: Seq[GScenario] = Nil
