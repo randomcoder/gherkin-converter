@@ -1,6 +1,6 @@
 package uk.co.randomcoding.cucumber.generator.reader
 
-import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, ScenarioOutline}
+import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Scenario, ScenarioOutline}
 import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
 import scala.language.implicitConversions
@@ -16,7 +16,7 @@ class CucumberScenarioOutlineReaderSpec extends FlatSpecTest with FeatureTestHel
 
   it should "Read a Scenario Outline from a Feature that has two simple Scenarios only one of which has tags" in {
     val feature = FeatureReader.read("/basic-feature-outline.feature")
-    feature.scenarios should be(Seq(basicScenario1, basicScenario2))
+    feature.scenarios should be(Seq(basicScenarioOutline1, basicScenarioOutline2))
   }
 
   it should "Read a Scenario Outline from a Feature that has a single Scenario with each step having 'Ands'" in {
@@ -32,6 +32,11 @@ class CucumberScenarioOutlineReaderSpec extends FlatSpecTest with FeatureTestHel
   it should "Read a Scenario Outline from a Feature file that has tags on the scenario and examples" in {
     val feature = FeatureReader.read("/single-scenario-outline-with-tags-on-examples.feature")
     feature.scenarios should be(Seq(simpleScenarioOutlineWithExampleTags))
+  }
+
+  it should "Read both Scenarios and Scenario Outlines from a feature file with both in" in {
+    val feature = FeatureReader.read("/basic-feature-mixed-scenario-and-outline.feature")
+    feature.scenarios should be(Seq(basicScenario1, basicScenarioOutline1))
   }
 
   private[this] val simpleScenarioOutline = ScenarioOutline("A simple scenario outline that has single line steps", Seq("@scenario-outline-tag-1"),
@@ -57,11 +62,14 @@ class CucumberScenarioOutlineReaderSpec extends FlatSpecTest with FeatureTestHel
     Seq("Then I get the result I expected of <result>", "But nothing else happens"),
     Examples(Seq("condition 1", "condition 2", "result"), Seq(Seq("test 1", "test 2", "hooray!")), Nil))
 
-  private[this] val basicScenario1 = ScenarioOutline("A simple scenario outline that has single line steps", Seq("@scenario-outline-tag-1"),
+  private[this] val basicScenarioOutline1 = ScenarioOutline("A simple scenario outline that has single line steps", Seq("@scenario-outline-tag-1"),
     Seq("Given a precondition <condition>"), Seq("When I do something"), Seq("Then I get the result I expected of <result>"),
     Examples(Seq("condition", "result"), Seq(Seq("test 1", "result 1")), Nil))
 
-  private[this] val basicScenario2 = ScenarioOutline("Another simple scenario outline that has single line steps", Nil,
+  private[this] val basicScenarioOutline2 = ScenarioOutline("Another simple scenario outline that has single line steps", Nil,
     Seq("Given a second precondition <condition 2>"), Seq("When I do something else"), Seq("Then I also get the result I expected of <result 2>"),
     Examples(Seq("condition 2", "result 2"), Seq(Seq("test 2", "result 2")), Nil))
+
+  private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
+    Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))
 }
