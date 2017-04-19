@@ -50,7 +50,6 @@ object FeatureReader {
       case featureLine :: rest if featureLine.startsWith(FEATURE) => readFeature(rest, feature.copy(description = tidyLine(featureLine, FEATURE)))
       case asALine :: rest if asALine.startsWith(AS_A) => readFeature(rest, feature.copy(asA = tidyLine(asALine, AS_A)))
       case inOrderToLine :: rest if inOrderToLine.startsWith(IN_ORDER_TO) => readFeature(rest, feature.copy(inOrderTo = tidyLine(inOrderToLine, IN_ORDER_TO)))
-      case iWantToLine :: rest if iWantToLine.startsWith(I_WANT_TO) => readFeature(rest, feature.copy(iWantTo = tidyLine(iWantToLine, I_WANT_TO)))
       case iWantLine :: rest if iWantLine.startsWith(I_WANT) => readFeature(rest, feature.copy(iWantTo = tidyLine(iWantLine, I_WANT)))
       case featureTagsLine :: rest if featureTagsLine.startsWith("@") && feature.description.isEmpty => {
         readFeature(rest, feature.copy(tags = featureTagsLine.split("""\s+""").toSeq))

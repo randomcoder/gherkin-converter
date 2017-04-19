@@ -80,7 +80,7 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
     feature.description should be ("The Feature Reader should be able to read basic feature files that have simple scenarios in.")
     feature.inOrderTo should be("be able to parse feature details from a file")
     feature.asA should be("person developing the library")
-    feature.iWantTo should be("be able to read details from a file")
+    feature.iWantTo should be("to be able to read details from a file")
   }
 
   it should "Correctly identify the number of different scenarios present under the feature" in {
@@ -95,7 +95,7 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
        Feature("The Feature Reader should be able to read basic feature files that have simple scenarios in.",
        "be able to parse feature details from a file",
        "person developing the library",
-       "be able to read details from a file",
+       "to be able to read details from a file",
        Seq("@basic",  "@feature", "@demo"),
        Seq(basicScenario1, basicScenarioOutline1))
      )
@@ -105,12 +105,12 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
   private[this] val simpleDescription = "A Simple feature that is described on a single line"
   private[this] val simpleInOrderTo = "test the running of the feature reader"
   private[this] val simpleAsA = "person who is writing the code"
-  private[this] val simpleIWantTo = "test it with simple single line descriptions"
+  private[this] val simpleIWantTo = "to test it with simple single line descriptions"
 
   private[this] val singleLineFeatureDescription = List(s"Feature: $simpleDescription",
                                         s"In order to $simpleInOrderTo",
                                         s"As a $simpleAsA",
-                                        s"I want to $simpleIWantTo")
+                                        s"I want $simpleIWantTo")
 
   private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))

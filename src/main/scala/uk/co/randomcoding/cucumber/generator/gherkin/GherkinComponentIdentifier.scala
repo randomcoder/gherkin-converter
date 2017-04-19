@@ -32,8 +32,6 @@ object GherkinComponentIdentifier {
 
   val IN_ORDER_TO = "In order to"
 
-  val I_WANT_TO = "I want to"
-
   val I_WANT = "I want"
 
   val SCENARIO = "Scenario:"
