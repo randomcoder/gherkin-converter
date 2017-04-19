@@ -73,10 +73,13 @@ object FeatureReader {
         }
       }
       case scenarioLine :: rest if scenarioLine.trim.startsWith(SCENARIO) => {
-        val (s, restOfLines) = readScenario(rest, scenario = Scenario(scenarioLine.drop(SCENARIO.length).trim, Nil, Nil, Nil, Nil))
+        val (s, restOfLines) = readScenario(rest, Scenario(scenarioLine.drop(SCENARIO.length).trim, Nil, Nil, Nil, Nil))
         readScenarios(restOfLines, scenarios :+ s)
       }
-
+      case scenarioOutlineLine :: rest if scenarioOutlineLine.trim.startsWith(SCENARIO_OUTLINE) => {
+        val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(scenarioOutlineLine.drop(SCENARIO_OUTLINE.length).trim, Nil, Nil, Nil, Nil, Nil))
+        readScenarios(restOfLines, scenarios :+ s)
+      }
       case _ :: rest => readScenarios(rest, scenarios)
     }
   }
