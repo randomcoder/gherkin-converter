@@ -22,8 +22,6 @@ package uk.co.randomcoding.cucumber.generator.reader
 import uk.co.randomcoding.cucumber.generator.gherkin.Scenario
 import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
-import scala.io.Source
-
 import scala.language.implicitConversions
 
 /**
@@ -32,7 +30,7 @@ import scala.language.implicitConversions
  *
  * @author RandomCoder
  */
-class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
+class CucumberScenarioReaderSpec extends FlatSpecTest with FeatureTestHelpers {
 
   behaviour of "A Feature Reader"
 
@@ -55,8 +53,6 @@ class CucumberScenarioReaderTest extends FlatSpecTest with FeatureTestHelpers {
     val feature = FeatureReader.read("/single-scenario-with-buts.feature")
     feature.scenarios should be(Seq(simpleScenarioWithButs))
   }
-
-  private[this] implicit def pathToLInes(p: String): List[String] = Source.fromInputStream(getClass.getResourceAsStream(p)).getLines().toList
 
   private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a simple precondition"), Seq("When I do something easy"), Seq("Then I get the result I expected"))

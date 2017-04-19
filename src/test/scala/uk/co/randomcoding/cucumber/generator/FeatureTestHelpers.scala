@@ -32,4 +32,6 @@ import scala.language.implicitConversions
  */
 trait FeatureTestHelpers {
   implicit def sourceToLines(s: Source): List[String] = s.getLines().toList
+
+  implicit def pathToLines(p: String): List[String] = Source.fromInputStream(getClass.getResourceAsStream(p)).getLines().toList
 }

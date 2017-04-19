@@ -19,21 +19,19 @@
  */
 package uk.co.randomcoding.cucumber.generator.reader
 
-import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
+import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
 import scala.io.Source
 
 import scala.language.implicitConversions
 
-class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
+class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
 
   behaviour of "Feature Reader"
 
   it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario" in {
-    val description = s"""$singleLineFeatureDescription
-    |
-    |$SCENARIO""".stripMargin
+    val description = singleLineFeatureDescription ++ List("\n", SCENARIO)
 
     val feature = FeatureReader.read(description)
     feature.description should be(simpleDescription)
@@ -43,9 +41,7 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read the Feature details from a feature that is described all in single lines and ends with a Scenario Outline" in {
-    val description = s"""$singleLineFeatureDescription
-    |
-    |$SCENARIO_OUTLINE""".stripMargin
+    val description = singleLineFeatureDescription ++ List("\n", SCENARIO_OUTLINE)
 
     val feature = FeatureReader.read(description)
     feature.description should be(simpleDescription)
@@ -55,13 +51,7 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read the Feature details from a feature that is described all in single lines and the first Scenario (or Outline) has a tag"in {
-    val description = s"""$singleLineFeatureDescription
-    |
-    |@a-tag
-    |$SCENARIO A Scenario
-    |$GIVEN Given
-    |$WHEN When
-    |$THEN Then""".stripMargin
+    val description = singleLineFeatureDescription ++ List("\n", "@a-tag", s"$SCENARIO A Scenario", s"$GIVEN Given", s"$WHEN When", s"$THEN Then")
 
     val feature = FeatureReader.read(description)
     feature.description should be(simpleDescription)
@@ -71,25 +61,21 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Read a single tag associated to a Feature"in {
-    val description = s"""@start-tag
-    |$singleLineFeatureDescription""".stripMargin
+    val description = List("@start-tag") ++ singleLineFeatureDescription
 
     val feature = FeatureReader.read(description)
     feature.tags should be (Seq("@start-tag"))
   }
 
   it should "Read a multiple tags associated to a Feature"in {
-    val description = s"""@start-tag @feature-tag @final-tag
-    |$singleLineFeatureDescription""".stripMargin
+    val description = List("@start-tag @feature-tag @final-tag") ++ singleLineFeatureDescription
 
     val feature = FeatureReader.read(description)
     feature.tags should be (Seq("@start-tag", "@feature-tag", "@final-tag"))
   }
 
   it should "Read the basic feature details from a file" in {
-    val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
-
-    val feature = FeatureReader.read(file)
+    val feature = FeatureReader.read("/basic-feature.feature")
     feature.description should be ("The Feature Reader should be able to read basic feature files that have simple scenarios in.")
     feature.inOrderTo should be("be able to parse feature details from a file")
     feature.asA should be("person developing the library")
@@ -103,15 +89,13 @@ class CucumberFeatureReaderTest extends FlatSpecTest with FeatureTestHelpers {
     feature.scenarios should have size 2
   }
 
-  private[this] implicit def stringToLines(s: String): List[String] = Source.fromString(s).getLines().toList
-
   private[this] val simpleDescription = "A Simple feature that is described on a single line"
   private[this] val simpleInOrderTo = "test the running of the feature reader"
   private[this] val simpleAsA = "person who is writing the code"
   private[this] val simpleIWantTo = "test it with simple single line descriptions"
 
-  private[this] val singleLineFeatureDescription = s"""Feature: $simpleDescription
-                                        |In order to $simpleInOrderTo
-                                        |As a $simpleAsA
-                                        |I want to $simpleIWantTo""".stripMargin
+  private[this] val singleLineFeatureDescription = List(s"Feature: $simpleDescription",
+                                        s"In order to $simpleInOrderTo",
+                                        s"As a $simpleAsA",
+                                        s"I want to $simpleIWantTo")
 }
