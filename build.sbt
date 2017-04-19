@@ -15,9 +15,7 @@ libraryDependencies ++= loggingDependencies ++ jodaTimeDependencies ++ testDepen
 crossScalaVersions := Seq("2.12.2", "2.11.10")
 
 testOptions in Test  ++= Seq(
-  Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM"),
-  Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/xmlresults/"),
-  Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/htmlresults/")
+  Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM")
 )
 
 // Your profile name of the sonatype account. The default is the same with the organization value
