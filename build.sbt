@@ -14,14 +14,10 @@ libraryDependencies ++= loggingDependencies ++ jodaTimeDependencies ++ testDepen
 
 crossScalaVersions := Seq("2.12.2", "2.11.10")
 
-testOptions in Test  ++= Seq(
-  Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM")
-)
+testOptions in Test  ++= Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM"))
 
-// Your profile name of the sonatype account. The default is the same with the organization value
 sonatypeProfileName := "uk.co.randomcoding"
 
-// To sync with Maven central, you need to supply the following information:
 pomExtra in Global := {
   <url>https://github.com/randomcoder/gherkin-converter</url>
   <licenses>
