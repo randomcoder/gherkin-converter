@@ -29,7 +29,7 @@ object FeatureHtml {
                 </div>
               </div>}}
               <div class="row">
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                   <h2>Feature:</h2>
                 </div>
                 <div class="col col-sm-6 feature_description" id="feature_description">
@@ -37,7 +37,7 @@ object FeatureHtml {
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                   <h4>As a</h4>
                 </div>
                 <div class="col col-sm-6 feature_part" id="as_a">
@@ -45,7 +45,7 @@ object FeatureHtml {
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                   <h4>I Want</h4>
                 </div>
                 <div class="col col-sm-6 feature_part" id="i_want">
@@ -53,7 +53,7 @@ object FeatureHtml {
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                   <h4>In order to</h4>
                 </div>
                 <div class="col col-sm-6 feature_part" id="in_order_to">
@@ -70,7 +70,7 @@ object FeatureHtml {
 
   private[this] def scenarioHtml(scenario: ScenarioDesc, elementId: String) = {
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <h3>{scenario.identifier}:</h3>
       </div>
       <div class="col col-sm-6 scenario_description" id="scenario_description">
