@@ -58,18 +58,25 @@ object FeatureReader {
     }
   }
 
-  private[this] def readScenarios(scenarioLines: Seq[String], scenarios: Seq[Scenario]): Seq[Scenario] = {
+  private[this] def readScenarios(scenarioLines: Seq[String], scenarios: Seq[ScenarioDesc]): Seq[ScenarioDesc] = {
     scenarioLines match {
       case Nil => scenarios
-      case tagsLine :: rest if tagsLine.startsWith("@") => {
+      case tagsLine :: scenarioLine :: rest if tagsLine.startsWith("@") => {
         val theTags = tagsLine.split("""\s""")
-        val (s, restOfLines) = readScenario(rest, Scenario("", theTags, Nil, Nil, Nil))
-        readScenarios(restOfLines, scenarios :+ s)
+        if (scenarioLine.startsWith(SCENARIO_OUTLINE)) {
+          val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(scenarioLine.drop(SCENARIO_OUTLINE.length).trim, theTags, Nil, Nil, Nil, Nil))
+          readScenarios(restOfLines, scenarios :+ s)
+        }
+        else {
+          val (s, restOfLines) = readScenario(rest, Scenario(scenarioLine.drop(SCENARIO.length).trim, theTags, Nil, Nil, Nil))
+          readScenarios(restOfLines, scenarios :+ s)
+        }
       }
       case scenarioLine :: rest if scenarioLine.trim.startsWith(SCENARIO) => {
         val (s, restOfLines) = readScenario(rest, scenario = Scenario(scenarioLine.drop(SCENARIO.length).trim, Nil, Nil, Nil, Nil))
         readScenarios(restOfLines, scenarios :+ s)
       }
+
       case _ :: rest => readScenarios(rest, scenarios)
     }
   }
@@ -88,6 +95,27 @@ object FeatureReader {
       }
       case "" :: rest => (scenario, rest)
       case _ :: rest => readScenario(rest, scenario)
+    }
+  }
+
+  private[this] def readScenarioOutline(scenarioLines: Seq[String], scenarioOutline: ScenarioOutline): (ScenarioOutline, Seq[String]) = {
+    scenarioLines match {
+      case Nil => (scenarioOutline, Nil)
+      case givenLine :: rest if givenLine.startsWith(GIVEN) => readScenarioOutline(rest, scenarioOutline.copy(givens = scenarioOutline.givens :+ givenLine))
+      case whenLine :: rest if whenLine.startsWith(WHEN) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ whenLine))
+      case thenLine :: rest if thenLine.startsWith(THEN) => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ thenLine))
+      case andOrButLine :: rest if andOrButLine.startsWith(AND) || andOrButLine.startsWith(BUT) => scenarioOutline match {
+        case ScenarioOutline(_, _, _, Nil, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(givens = scenarioOutline.givens :+ andOrButLine))
+        case ScenarioOutline(_, _, _, _, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ andOrButLine))
+        case _ => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ andOrButLine))
+      }
+      case "" :: EXAMPLES :: rest => {
+        val exampleLines = rest.takeWhile(_.startsWith("|"))
+        val examples = exampleLines.map(_.split("""\s*\|\s*""").map(_.trim).filterNot(_.isEmpty).toSeq)
+        readScenarioOutline(rest.drop(exampleLines.length), scenarioOutline.copy(examples = examples))
+      }
+      case "" :: rest => (scenarioOutline, rest)
+      case _ :: rest => readScenarioOutline(rest, scenarioOutline)
     }
   }
 }
