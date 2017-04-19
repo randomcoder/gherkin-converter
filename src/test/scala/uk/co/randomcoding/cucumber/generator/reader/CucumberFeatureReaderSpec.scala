@@ -20,6 +20,7 @@
 package uk.co.randomcoding.cucumber.generator.reader
 
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
+import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, Scenario, ScenarioOutline}
 import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
 import scala.io.Source
@@ -89,6 +90,18 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
     feature.scenarios should have size 2
   }
 
+  it should "Read the full feature and scenarios from a feature file with Scenarios and Scenario Outlines" in {
+     FeatureReader.read("/basic-feature-mixed-scenario-and-outline.feature") should be (
+       Feature("The Feature Reader should be able to read basic feature files that have simple scenarios in.",
+       "be able to parse feature details from a file",
+       "person developing the library",
+       "be able to read details from a file",
+       Seq("@basic",  "@feature", "@demo"),
+       Seq(basicScenario1, basicScenarioOutline1))
+     )
+
+  }
+
   private[this] val simpleDescription = "A Simple feature that is described on a single line"
   private[this] val simpleInOrderTo = "test the running of the feature reader"
   private[this] val simpleAsA = "person who is writing the code"
@@ -98,4 +111,11 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
                                         s"In order to $simpleInOrderTo",
                                         s"As a $simpleAsA",
                                         s"I want to $simpleIWantTo")
+
+  private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
+    Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))
+
+  private[this] val basicScenarioOutline1 = ScenarioOutline("A simple scenario outline that has single line steps", Seq("@scenario-outline-tag-1"),
+    Seq("Given a precondition <condition>"), Seq("When I do something"), Seq("Then I get the result I expected of <result>"),
+    Examples(Seq("condition", "result"), Seq(Seq("test 1", "result 1")), Nil))
 }

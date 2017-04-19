@@ -34,4 +34,4 @@ case class Scenario(description: String, tags: Seq[String], givens: Seq[String],
 
 case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Examples) extends GherkinComponent("Scenario Outline", tags) with ScenarioDesc
 
-case class Examples(headings: Seq[String], examples: Seq[Seq[String]], tags: Seq[String])
+case class Examples(headings: Seq[String], examples: Seq[Seq[String]], tags: Seq[String]) extends GherkinComponent("Examples", tags)
