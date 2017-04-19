@@ -33,6 +33,7 @@ object Dependencies {
   val jodaConvertVersion = "1.8.1"
   val groovyVersion = "2.4.10"
   val gherkinVersion = "2.12.1"
+  val scalaXmlVersion = "1.0.6"
 
   /**
    * This is used to add an exclude to a dependency. See jodaTime for an example
@@ -53,6 +54,8 @@ object Dependencies {
   val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
 
   val gherkin = "info.cukes" % "gherkin" % gherkinVersion
+
+  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % scalaXmlVersion
 
   val loggingDependencies = Seq(logback, groovy, scalaLogging)
   val jodaTimeDependencies = Seq(jodaTime, jodaConvert)

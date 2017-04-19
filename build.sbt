@@ -10,7 +10,7 @@ scalaVersion := "2.12.2"
 
 scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-explaintypes", "-deprecation")
 
-libraryDependencies ++= loggingDependencies ++ jodaTimeDependencies ++ testDependencies ++ Seq(gherkin)
+libraryDependencies ++= loggingDependencies ++ jodaTimeDependencies ++ testDependencies ++ Seq(gherkin, scalaXml)
 
 crossScalaVersions := Seq("2.12.2", "2.11.10")
 
