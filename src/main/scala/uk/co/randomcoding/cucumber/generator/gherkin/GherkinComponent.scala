@@ -24,11 +24,17 @@ package uk.co.randomcoding.cucumber.generator.gherkin
  *
  * @author RandomCoder
  */
-sealed abstract class GherkinComponent(val identifier: String, tags: Seq[String])
+sealed trait GherkinComponent {
+  def identifier: String
 
-case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String, tags: Seq[String], scenarios: Seq[ScenarioDesc]) extends GherkinComponent("Feature", tags)
+  def tags: Seq[String]
+}
 
-sealed trait ScenarioDesc {
+case class Feature(description: String, inOrderTo: String, asA: String, iWantTo: String, tags: Seq[String], scenarios: Seq[ScenarioDesc]) extends GherkinComponent {
+  override val identifier = "Feature"
+}
+
+sealed trait ScenarioDesc extends GherkinComponent {
   def description: String
   def tags: Seq[String]
   def givens: Seq[String]
@@ -36,8 +42,14 @@ sealed trait ScenarioDesc {
   def thens: Seq[String]
 }
 
-case class Scenario(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String]) extends GherkinComponent("Scenario", tags) with ScenarioDesc
+case class Scenario(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String]) extends ScenarioDesc {
+  override val identifier = "Scenario"
+}
 
-case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Examples) extends GherkinComponent("Scenario Outline", tags) with ScenarioDesc
+case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Examples) extends ScenarioDesc {
+  override val identifier = "Scenario Outline"
+}
 
-case class Examples(headings: Seq[String], examples: Seq[Seq[String]], tags: Seq[String]) extends GherkinComponent("Examples", tags)
+case class Examples(headings: Seq[String], examples: Seq[Seq[String]], tags: Seq[String]) extends GherkinComponent {
+  override val identifier = "Examples"
+}
