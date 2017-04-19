@@ -64,7 +64,7 @@ object FeatureReader {
       case tagsLine :: scenarioLine :: rest if tagsLine.startsWith("@") => {
         val theTags = tagsLine.split("""\s""")
         if (scenarioLine.startsWith(SCENARIO_OUTLINE)) {
-          val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(scenarioLine.drop(SCENARIO_OUTLINE.length).trim, theTags, Nil, Nil, Nil, Nil))
+          val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(scenarioLine.drop(SCENARIO_OUTLINE.length).trim, theTags, Nil, Nil, Nil, Examples(Nil, Nil, Nil)))
           readScenarios(restOfLines, scenarios :+ s)
         }
         else {
@@ -77,7 +77,7 @@ object FeatureReader {
         readScenarios(restOfLines, scenarios :+ s)
       }
       case scenarioOutlineLine :: rest if scenarioOutlineLine.trim.startsWith(SCENARIO_OUTLINE) => {
-        val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(scenarioOutlineLine.drop(SCENARIO_OUTLINE.length).trim, Nil, Nil, Nil, Nil, Nil))
+        val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(scenarioOutlineLine.drop(SCENARIO_OUTLINE.length).trim, Nil, Nil, Nil, Nil, Examples(Nil, Nil, Nil)))
         readScenarios(restOfLines, scenarios :+ s)
       }
       case _ :: rest => readScenarios(rest, scenarios)
@@ -112,10 +112,16 @@ object FeatureReader {
         case ScenarioOutline(_, _, _, _, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ andOrButLine))
         case _ => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ andOrButLine))
       }
+      case "" :: exampleTags :: EXAMPLES :: rest if exampleTags.startsWith("@") => {
+        val tags = exampleTags.split("""\s+""")
+        val exampleLines = rest.takeWhile(_.startsWith("|"))
+        val examples = exampleLines.map(_.split("""\s*\|\s*""").map(_.trim).filterNot(_.isEmpty).toSeq)
+        readScenarioOutline(rest.drop(exampleLines.length), scenarioOutline.copy(examples = Examples(examples.head, examples.tail, tags)))
+      }
       case "" :: EXAMPLES :: rest => {
         val exampleLines = rest.takeWhile(_.startsWith("|"))
         val examples = exampleLines.map(_.split("""\s*\|\s*""").map(_.trim).filterNot(_.isEmpty).toSeq)
-        readScenarioOutline(rest.drop(exampleLines.length), scenarioOutline.copy(examples = examples))
+        readScenarioOutline(rest.drop(exampleLines.length), scenarioOutline.copy(examples = Examples(examples.head, examples.tail, Nil)))
       }
       case "" :: rest => (scenarioOutline, rest)
       case _ :: rest => readScenarioOutline(rest, scenarioOutline)

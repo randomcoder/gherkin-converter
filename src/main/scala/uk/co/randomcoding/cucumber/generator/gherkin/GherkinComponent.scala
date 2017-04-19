@@ -32,4 +32,6 @@ sealed trait ScenarioDesc
 
 case class Scenario(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String]) extends GherkinComponent("Scenario", tags) with ScenarioDesc
 
-case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Seq[Seq[String]]) extends GherkinComponent("Scenario Outline", tags) with ScenarioDesc
+case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Examples) extends GherkinComponent("Scenario Outline", tags) with ScenarioDesc
+
+case class Examples(headings: Seq[String], examples: Seq[Seq[String]], tags: Seq[String])
