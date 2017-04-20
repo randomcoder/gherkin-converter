@@ -63,6 +63,17 @@
     padding-bottom: 10px;
 }
 
+.examples_heading {
+  font-size: large;
+  color: darkslategray;
+  font-weight: bold;
+}
+
+.examples_tags {
+    color: indigo;
+    font-weight: bold;
+}
+
 table {
     border-collapse: collapse;
 }

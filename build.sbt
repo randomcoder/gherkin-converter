@@ -6,13 +6,13 @@ organization :=  "uk.co.randomcoding"
 
 version := "0.5.0-SNAPSHOT"
 
-scalaVersion := "2.12.2"
+scalaVersion := "2.10.6"
 
 scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-explaintypes", "-deprecation")
 
-libraryDependencies ++= loggingDependencies ++ jodaTimeDependencies ++ testDependencies ++ Seq(gherkin, scalaXml)
+libraryDependencies ++= loggingDependencies ++ jodaTimeDependencies ++ testDependencies ++ Seq(gherkin)//, scalaXml)
 
-crossScalaVersions := Seq("2.12.2", "2.11.10")
+//crossScalaVersions := Seq("2.12.2", "2.11.10", "2.10.6")
 
 testOptions in Test  ++= Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM"))
 

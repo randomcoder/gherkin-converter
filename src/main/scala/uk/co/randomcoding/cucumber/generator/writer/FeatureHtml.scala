@@ -46,7 +46,7 @@ object FeatureHtml {
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-2 feature_part_prefix" id="in_order_to">
+                <div class="col-sm-12 feature_part_prefix" id="in_order_to">
                   <span class="feature_part_prefix">In order to </span><span class="feature_part">{feature.inOrderTo}</span>
                 </div>
               </div>
@@ -94,14 +94,14 @@ object FeatureHtml {
 
   private[this] def examplesHtml(examples: Examples) = {
     <div class="examples">{ if (examples.tags.nonEmpty) {
-      <div class="row" id="example_tags">
-        <div class="col-sm-12 example_tags">
+      <div class="row">
+        <div class="col-sm-12 examples_tags" id="example_tags">
           {examples.tags.mkString(" ")}
         </div>
       </div>}}
       <div class="row">
-        <div class="col col-sm-8">
-          <h3>Examples:</h3>
+        <div class="col col-sm-12 examples_heading">
+          Examples:
         </div>
       </div>
       <div class="row">
