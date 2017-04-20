@@ -3,3 +3,7 @@ scala:
    - 2.11.10
    - 2.12.2
 jdk: oraclejdk8
+notifications:
+  email:
+    recipients:
+      - randomcoder@randomcoding.co.uk
