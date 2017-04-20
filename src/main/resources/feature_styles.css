@@ -1,11 +1,87 @@
+.feature {
+    background-color: powderblue;
+    border-radius: 10px;
+}
+.feature_heading {
+    color: darkslateblue;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.feature_tags {
+    color: indigo;
+    font-weight: bold;
+    font-size: large;
+}
+
+.feature_part_prefix {
+    color: midnightblue;
+    font-size: large;
+}
 
 .feature_description {
-    font-weight: bold;
     font-size: x-large;
-    padding-top: 20px;
 }
 
 .feature_part {
-    font-weight: 400;
     font-size: large;
+}
+
+.scenario {
+    padding-top: 15px;
+}
+
+.scenario_tags {
+    color: indigo;
+    font-weight: bold;
+}
+
+.scenario_heading {
+    font-size: large;
+    color: darkslategray;
+    font-weight: bold;
+}
+
+.scenario_description {
+    font-size: large;
+}
+
+.given {
+    padding-left: 25px;
+}
+
+.when {
+    padding-left: 25px;
+}
+
+.then {
+    padding-left: 25px;
+}
+
+.examples {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td, th, table {
+    border: 1px solid black;
+}
+
+th {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+td {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.container {
+    padding-top: 10px;
+    padding-bottom: 10px
 }
