@@ -27,7 +27,7 @@ pomExtra in Global := {
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:github.com/randomcoder/gherkin-converter</connection>
+    <connection>scm:git:github.com/randomcoder/gherkin-converter.git</connection>
     <developerConnection>scm:git:git@github.com:randomcoder/gherkin-converter.git</developerConnection>
     <url>github.com/randomcoder/gherkin-converter</url>
   </scm>
