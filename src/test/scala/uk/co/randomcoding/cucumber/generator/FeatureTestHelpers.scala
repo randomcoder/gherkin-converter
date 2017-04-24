@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (C) 2013 RandomCoder <randomcoder@randomcoding.co.uk>
+ * Copyright (C) 2017. RandomCoder <randomcoder@randomcoding.co.uk>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Contributors:
- * RandomCoder - initial API and implementation and/or initial documentation
  */
 
 package uk.co.randomcoding.cucumber.generator
