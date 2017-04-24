@@ -16,7 +16,7 @@
  *
  */
 
-package uk.co.randomcoding.cucumber.generator.writer
+package uk.co.randomcoding.cucumber.generator.html
 
 import org.scalatest.StreamlinedXmlNormMethods
 import uk.co.randomcoding.cucumber.generator.FlatSpecTest

@@ -16,12 +16,47 @@
  *
  */
 
-package uk.co.randomcoding.cucumber.generator.writer
+package uk.co.randomcoding.cucumber.generator.html
+
+import java.io.File
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, ScenarioDesc, ScenarioOutline}
+import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
+import uk.co.randomcoding.cucumber.generator.writer.writeFile
 
+import scala.collection.JavaConverters._
 import scala.io.Source
+import scala.util.Try
 import scala.xml.NodeSeq
+
+trait FeatureHtml {
+
+  def generateFeatures(dir: File, baseOutputDir: File, relativeTo: File): Unit = {
+    val relativePath = dir.toPath.relativize(relativeTo.toPath).toString
+    val targetDir = new File(baseOutputDir, relativePath)
+
+    val dirContents = Try(dir.listFiles.toList).getOrElse(Nil)
+
+    dirContents.partition(_.isDirectory) match {
+      case (dirs, files) => {
+        writeFeatures(files.filter(_.getName.endsWith(".feature")), targetDir)
+        dirs.foreach(generateFeatures(_, baseOutputDir, relativeTo))
+      }
+    }
+  }
+
+  private[this] def writeFeatures(features: Seq[File], outputDir: File) = {
+    outputDir.mkdirs()
+    features.foreach { featureFile =>
+      val html = FeatureHtml(FeatureReader.read(Files.readAllLines(featureFile.toPath, StandardCharsets.UTF_8).asScala.toList))
+      val targetFile = new File(outputDir, featureFile.getName + ".html")
+
+      writeFile(html, targetFile)
+    }
+  }
+}
 
 object FeatureHtml {
   def apply(feature: Feature): NodeSeq = {
