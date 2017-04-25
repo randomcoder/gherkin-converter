@@ -25,7 +25,6 @@ import sbt._
  */
 object Dependencies {
 
-  // Define version numbers of libraries that could (and should) change here
   val scalaLoggingVersion = "3.5.0"
   val scalatestVersion = "3.0.1"
   val logbackVersion = "1.2.3"
@@ -33,31 +32,18 @@ object Dependencies {
   val jodaConvertVersion = "1.8.1"
   val groovyVersion = "2.4.10"
   val gherkinVersion = "2.12.1"
-  //val scalaXmlVersion = "1.0.6"
+  val scalacheckVersion = "1.13.4"
 
-  /**
-   * This is used to add an exclude to a dependency. See jodaTime for an example
-   */
   val exclude = (org: String, packageName: String) => ExclusionRule(organization = org, name = packageName)
 
-  lazy val excludeLog4j = exclude("log4j", "log4j")
+  val excludeLog4j = exclude("log4j", "log4j")
 
-  val jodaTime = "joda-time" % "joda-time" % jodaTimeVersion excludeAll excludeLog4j
-  val jodaConvert = "org.joda" % "joda-convert" % jodaConvertVersion excludeAll excludeLog4j
+  lazy val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % "test" excludeAll excludeLog4j
+  lazy val scalacheck = "org.scalacheck" %% "scalacheck" % scalacheckVersion % "test"
 
-  val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % "test" excludeAll excludeLog4j
+  lazy val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
+  lazy val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
 
-  //val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion excludeAll excludeLog4j
-
-  val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
-
-  val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
-
-  val gherkin = "info.cukes" % "gherkin" % gherkinVersion
-
-  //val scalaXml = "org.scala-lang.modules" %% "scala-xml" % scalaXmlVersion
-
-  val loggingDependencies = Seq(logback, groovy)//, scalaLogging)
-  val jodaTimeDependencies = Seq(jodaTime, jodaConvert)
-  val testDependencies = Seq(scalatest)
+  val loggingDependencies = Seq(logback, groovy)
+  val testDependencies = Seq(scalatest, scalacheck)
 }

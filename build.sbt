@@ -8,9 +8,9 @@ version := "0.6.0-SNAPSHOT"
 
 scalaVersion := "2.10.6"
 
-scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-explaintypes", "-deprecation")
+scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-deprecation")
 
-libraryDependencies ++= loggingDependencies ++ jodaTimeDependencies ++ testDependencies ++ Seq(gherkin)//, scalaXml)
+libraryDependencies ++= loggingDependencies ++ testDependencies
 
 testOptions in Test  ++= Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM"))
 
