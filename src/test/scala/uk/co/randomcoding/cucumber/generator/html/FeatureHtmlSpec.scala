@@ -22,8 +22,6 @@ import org.scalatest.StreamlinedXmlNormMethods
 import uk.co.randomcoding.cucumber.generator.FlatSpecTest
 import uk.co.randomcoding.cucumber.generator.gherkin.Feature
 
-import scala.xml.NodeSeq
-
 class FeatureHtmlSpec extends FlatSpecTest with StreamlinedXmlNormMethods {
 
   behaviour of "Html Feature Writer"
@@ -62,9 +60,5 @@ class FeatureHtmlSpec extends FlatSpecTest with StreamlinedXmlNormMethods {
   it should "display the feature tags in a div with the id 'feature_tags' if the feature has tags" in {
     val feature = Feature("", "", "", "", Seq("@tag1", "@tag2"), Nil)
     FeatureHtml(feature).divWithId("feature_tags").text.trim should be("@tag1 @tag2")
-  }
-
-  implicit class RichHtml(val html: NodeSeq) extends AnyRef {
-    def divWithId(id: String) = (html \\ "div").filter(_.attribute("id").exists(_.text == id))
   }
 }

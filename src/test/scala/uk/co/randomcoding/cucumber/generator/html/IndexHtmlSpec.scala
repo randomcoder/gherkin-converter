@@ -110,7 +110,7 @@ class IndexHtmlSpec extends FlatSpecTest with FileTestHelpers with PropertyCheck
       createFile(dir, "testing.feature.html")
       indexGenerator.writeIndexFiles(dir, "")
       val indexHtml = readIndex(dir)
-      val featureLinkDiv = (indexHtml \\ "div").filter(_.attribute("id").exists(_.text == "feature_links"))
+      val featureLinkDiv = indexHtml.divWithId("feature_links")
 
       (featureLinkDiv \\ "a") should contain (<a href="testing.feature.html">testing</a>)
     }
@@ -174,7 +174,7 @@ class IndexHtmlSpec extends FlatSpecTest with FileTestHelpers with PropertyCheck
     dir => {
       createFile(dir, "EmptyTest.feature.html")
       indexGenerator.writeIndexFiles(dir, "The Features")
-      val pageTitleDiv = (readIndex(dir) \\ "body" \\ "div").filter(_.attribute("id").exists(_.text == "page_title"))
+      val pageTitleDiv = readIndex(dir).divWithId("page_title")
       pageTitleDiv.text.trim should be("The Features")
     }
   }
