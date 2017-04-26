@@ -26,13 +26,13 @@ import sbt._
 object Dependencies {
 
   val scalaLoggingVersion = "3.5.0"
-  val scalatestVersion = "3.0.1"
+  val scalatestVersion = "3.0.3"
   val logbackVersion = "1.2.3"
   val jodaTimeVersion = "2.9.9"
   val jodaConvertVersion = "1.8.1"
   val groovyVersion = "2.4.10"
   val gherkinVersion = "2.12.1"
-  val scalacheckVersion = "1.13.4"
+  val scalacheckVersion = "1.13.5"
 
   val exclude = (org: String, packageName: String) => ExclusionRule(organization = org, name = packageName)
 
