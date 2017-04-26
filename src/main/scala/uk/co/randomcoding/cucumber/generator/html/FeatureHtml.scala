@@ -27,7 +27,6 @@ import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
 import uk.co.randomcoding.cucumber.generator.writer.writeHtml
 
 import scala.collection.JavaConverters._
-import scala.io.Source
 import scala.util.Try
 import scala.xml.NodeSeq
 
@@ -62,17 +61,11 @@ object FeatureHtml {
   def apply(feature: Feature): NodeSeq = {
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Feature: {feature.description}</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-        <style type="text/css">
-          {customCss}
-        </style>
+        {metaTags}
+        {jquery}
+        {bootstrap}
+        {customCss}
       </head>
       <body>
         <div class="container">
@@ -167,7 +160,4 @@ object FeatureHtml {
       </div>
     </div>
   }
-
-  // TODO: Move to common location
-  val customCss = Source.fromInputStream(getClass.getResourceAsStream("/feature_styles.css")).getLines().mkString("\n")
 }

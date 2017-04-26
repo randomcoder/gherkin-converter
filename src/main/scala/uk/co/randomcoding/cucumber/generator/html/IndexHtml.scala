@@ -20,7 +20,6 @@ package uk.co.randomcoding.cucumber.generator.html
 
 import java.io.File
 
-import uk.co.randomcoding.cucumber.generator.html.FeatureHtml.customCss
 import uk.co.randomcoding.cucumber.generator.writer._
 
 import scala.xml.NodeSeq
@@ -38,25 +37,25 @@ trait IndexHtml {
     val linksList = featureFileLinks ++ subDirectoryLinks
 
     if (linksList.nonEmpty) {
-      writeHtml(indexHtml(title, <ul>{featureFileLinks}</ul>, <ul>{subDirectoryLinks}</ul>, linkToParent), new File(htmlDir, "index.html"))
+      writeHtml(IndexHtml(title, <ul>{featureFileLinks}</ul>, <ul>{subDirectoryLinks}</ul>, linkToParent), new File(htmlDir, "index.html"))
       subDirectories.foreach(subDirectory => writeIndexFiles(subDirectory, true, linkTextFromName(subDirectory.getName)))
     }
   }
 
-  private[this] def indexHtml(title: String, featureLinks: NodeSeq, subDirectoryLinks: NodeSeq, linkToParent: Boolean) = {
+  private[this] def linkTextFromName(name: String) = {
+    name.takeWhile(_ != '.').replaceAll("""([A-Z0-9][a-z0-9])""", """ $1""").trim
+  }
+}
+
+object IndexHtml {
+  def apply(title: String, featureLinks: NodeSeq, subDirectoryLinks: NodeSeq, linkToParent: Boolean) = {
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Features: {title}</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-        <style type="text/css">
-          {customCss}
-        </style>
+        {metaTags}
+        {jquery}
+        {bootstrap}
+        {customCss}
       </head>
       <body>
         <div class="container">
@@ -87,9 +86,5 @@ trait IndexHtml {
         </div>
       </body>
     </html>
-  }
-
-  private[this] def linkTextFromName(name: String) = {
-    name.takeWhile(_ != '.').replaceAll("""([A-Z0-9][a-z0-9])""", """ $1""").trim
   }
 }
