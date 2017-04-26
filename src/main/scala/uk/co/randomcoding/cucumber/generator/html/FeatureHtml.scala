@@ -24,7 +24,7 @@ import java.nio.file.Files
 
 import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, ScenarioDesc, ScenarioOutline}
 import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
-import uk.co.randomcoding.cucumber.generator.writer.writeFile
+import uk.co.randomcoding.cucumber.generator.writer.writeHtml
 
 import scala.collection.JavaConverters._
 import scala.io.Source
@@ -53,7 +53,7 @@ trait FeatureHtml {
       val html = FeatureHtml(FeatureReader.read(Files.readAllLines(featureFile.toPath, StandardCharsets.UTF_8).asScala.toList))
       val targetFile = new File(outputDir, featureFile.getName + ".html")
 
-      writeFile(html, targetFile)
+      writeHtml(html, targetFile)
     }
   }
 }
@@ -168,5 +168,6 @@ object FeatureHtml {
     </div>
   }
 
-  private[this] val customCss = Source.fromInputStream(getClass.getResourceAsStream("/feature_styles.css")).getLines().mkString("\n")
+  // TODO: Move to common location
+  val customCss = Source.fromInputStream(getClass.getResourceAsStream("/feature_styles.css")).getLines().mkString("\n")
 }
