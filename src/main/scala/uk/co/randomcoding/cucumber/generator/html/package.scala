@@ -19,20 +19,23 @@
 package uk.co.randomcoding.cucumber.generator
 
 import scala.io.Source
+import scala.xml.NodeSeq
 
 package object html {
-  val customCss = <style type="text/css">{
-    Source.fromInputStream(getClass.getResourceAsStream("/feature_styles.css")).getLines().mkString("\n")
-  }</style>
+  val customCss: NodeSeq = {
+    <style type="text/css">{Source.fromInputStream(getClass.getResourceAsStream("/feature_styles.css")).getLines().mkString("\n")}</style>
+  }
 
-val metaTags = {
+  val metaTags = {
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   }
 
-val jquery = <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+  val jquery: NodeSeq = {
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+  }
 
-val bootstrap = {
+  val bootstrap: NodeSeq = {
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
