@@ -63,7 +63,7 @@ object FeatureReader {
       case tagsLine :: scenarioLine :: rest if tagsLine.startsWith("@") => {
         val theTags = tagsLine.split("""\s""")
         if (scenarioLine.startsWith(SCENARIO_OUTLINE)) {
-          val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(tidyLine(scenarioLine, SCENARIO_OUTLINE), theTags, Nil, Nil, Nil, Examples(Nil, Nil, Nil)))
+          val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(tidyLine(scenarioLine, SCENARIO_OUTLINE), theTags, Nil, Nil, Nil, Nil))
           readScenarios(restOfLines, scenarios :+ s)
         }
         else {
@@ -76,7 +76,7 @@ object FeatureReader {
         readScenarios(restOfLines, scenarios :+ s)
       }
       case scenarioOutlineLine :: rest if scenarioOutlineLine.startsWith(SCENARIO_OUTLINE) => {
-        val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(tidyLine(scenarioOutlineLine, SCENARIO_OUTLINE), Nil, Nil, Nil, Nil, Examples(Nil, Nil, Nil)))
+        val (s, restOfLines) = readScenarioOutline(rest, ScenarioOutline(tidyLine(scenarioOutlineLine, SCENARIO_OUTLINE), Nil, Nil, Nil, Nil, Nil))
         readScenarios(restOfLines, scenarios :+ s)
       }
       case _ :: rest => readScenarios(rest, scenarios)
@@ -111,12 +111,12 @@ object FeatureReader {
         case _ => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ andOrButLine))
       }
       case exWithTags@("" :: exampleTags :: EXAMPLES :: _) if exampleTags.startsWith("@") => {
-        val (examples, remaining) = readExamples(exWithTags.tail, Examples(Nil, Nil, Nil))
-        readScenarioOutline(remaining, scenarioOutline.copy(examples = examples))
+        val (newExamples, remaining) = readExamples(exWithTags.tail, Examples(Nil, Nil, Nil))
+        readScenarioOutline(remaining, scenarioOutline.copy(examples = scenarioOutline.examples :+ newExamples))
       }
       case exWithoutTags@("" :: EXAMPLES :: _) => {
-        val (examples, remaining) = readExamples(exWithoutTags.tail, Examples(Nil, Nil, Nil))
-        readScenarioOutline(remaining, scenarioOutline.copy(examples = examples))
+        val (newExamples, remaining) = readExamples(exWithoutTags.tail, Examples(Nil, Nil, Nil))
+        readScenarioOutline(remaining, scenarioOutline.copy(examples = scenarioOutline.examples :+ newExamples))
       }
       case "" :: rest => (scenarioOutline, rest)
       case _ :: rest => readScenarioOutline(rest, scenarioOutline)

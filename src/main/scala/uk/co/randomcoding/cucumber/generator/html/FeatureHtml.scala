@@ -121,7 +121,7 @@ object FeatureHtml {
       stepsHtml(scenario.whens, "when") ++
       stepsHtml(scenario.thens, "then") ++
       (scenario match {
-        case ScenarioOutline(_, _, _, _, _, examples) => examplesHtml(examples)
+        case ScenarioOutline(_, _, _, _, _, examples) => examples.map(examplesHtml)
         case _ => Nil
       })
       }
