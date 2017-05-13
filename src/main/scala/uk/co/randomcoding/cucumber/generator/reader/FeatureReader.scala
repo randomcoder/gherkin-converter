@@ -110,12 +110,12 @@ object FeatureReader {
         case ScenarioOutline(_, _, _, _, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ andOrButLine))
         case _ => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ andOrButLine))
       }
-      case exWithTags@("" :: exampleTags :: EXAMPLES :: _) if exampleTags.startsWith("@") => {
-        val (newExamples, remaining) = readExamples(exWithTags.tail, Examples(Nil, Nil, Nil))
+      case examplesSectionWithTags@("" :: exampleTags :: EXAMPLES :: _) if exampleTags.startsWith("@") => {
+        val (newExamples, remaining) = readExamples(examplesSectionWithTags.tail, Examples(Nil, Nil, Nil))
         readScenarioOutline(remaining, scenarioOutline.copy(examples = scenarioOutline.examples :+ newExamples))
       }
-      case exWithoutTags@("" :: EXAMPLES :: _) => {
-        val (newExamples, remaining) = readExamples(exWithoutTags.tail, Examples(Nil, Nil, Nil))
+      case examplesSectionWithoutTags@("" :: EXAMPLES :: _) => {
+        val (newExamples, remaining) = readExamples(examplesSectionWithoutTags.tail, Examples(Nil, Nil, Nil))
         readScenarioOutline(remaining, scenarioOutline.copy(examples = scenarioOutline.examples :+ newExamples))
       }
       case "" :: rest => (scenarioOutline, rest)
