@@ -52,6 +52,11 @@ class CucumberScenarioReaderSpec extends FlatSpecTest with FeatureTestHelpers {
     feature.scenarios should be(Seq(simpleScenarioWithButs))
   }
 
+  it should "Read step definitions with data lists at the end of them" in {
+    val feature = FeatureReader.read("/single-scenario-with-data-list.feature")
+
+  }
+
   private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
     Seq("Given a simple precondition"), Seq("When I do something easy"), Seq("Then I get the result I expected"))
 
@@ -70,4 +75,8 @@ class CucumberScenarioReaderSpec extends FlatSpecTest with FeatureTestHelpers {
 
   private[this] val basicScenario2 = Scenario("Another simple scenario that has single line steps", Nil,
     Seq("Given a second precondition"), Seq("When I do something else"), Seq("Then I also get the result I expected"))
+
+  private[this] val scenarioWithDataListSteps = Scenario("A simple scenario that has single line steps with data lists",
+    Seq("scenario-tag-1"), Seq("Given a simple precondition with a list:"),// item1, item2, item with spaces
+  Seq("When I do something easy"), Seq("Then I get the result I expected has all of:"))// item 1, item 2, item with spaces)
 }

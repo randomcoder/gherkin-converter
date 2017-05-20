@@ -32,6 +32,18 @@ case class Feature(description: String, inOrderTo: String, asA: String, iWantTo:
   override val identifier = "Feature"
 }
 
+sealed trait StepData
+case class DataList(items: Seq[String]) extends StepData
+
+sealed trait StepDef {
+  def stepText: String
+  def data: Option[StepData]
+}
+
+case class Given(stepText: String, data: Option[StepData]) extends StepDef
+case class When(stepText: String, data: Option[StepData]) extends StepDef
+case class Then(stepText: String, data: Option[StepData]) extends StepDef
+
 sealed trait ScenarioDesc extends GherkinComponent {
   def description: String
   def tags: Seq[String]

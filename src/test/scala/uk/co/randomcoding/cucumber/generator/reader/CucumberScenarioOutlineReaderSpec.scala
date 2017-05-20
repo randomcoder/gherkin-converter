@@ -57,7 +57,7 @@ class CucumberScenarioOutlineReaderSpec extends FlatSpecTest with FeatureTestHel
     feature.scenarios should be(Seq(basicScenario1, basicScenarioOutline1))
   }
 
-  it should "Read all tagged sets of examples frrom a Scenario Outline with multiple tagged examples sections" in {
+  it should "Read all tagged sets of examples from a Scenario Outline with multiple tagged examples sections" in {
     val feature = FeatureReader.read("/single-scenario-outline-with-tags-on-multiple-examples.feature")
     feature.scenarios should be(Seq(simpleScenarioOutlineWithMultipleTaggedExampleSections))
   }
