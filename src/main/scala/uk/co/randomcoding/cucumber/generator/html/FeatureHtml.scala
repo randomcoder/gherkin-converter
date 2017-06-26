@@ -18,41 +18,40 @@
 
 package uk.co.randomcoding.cucumber.generator.html
 
-import java.io.File
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
+import java.nio.file.{Files, Path}
+import java.util.stream.Collectors
 
 import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, ScenarioDesc, ScenarioOutline}
 import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
 import uk.co.randomcoding.cucumber.generator.writer.writeHtml
 
 import scala.collection.JavaConverters._
-import scala.util.Try
 import scala.xml.NodeSeq
 
 trait FeatureHtml {
 
-  def generateFeatures(dir: File, baseOutputDir: File, relativeTo: File): Unit = {
-    val relativePath = dir.toPath.relativize(relativeTo.toPath).toString
-    val targetDir = new File(baseOutputDir, relativePath)
+  def generateFeatures(featureFileDir: Path, baseOutputDir: Path, relativeTo: Path): Unit = {
+    val relativePath = if (featureFileDir == relativeTo) "" else featureFileDir.subpath(relativeTo.getNameCount, featureFileDir.getNameCount).toString
 
-    val dirContents = Try(dir.listFiles.toList).getOrElse(Nil)
+    val targetDir = baseOutputDir.resolve(relativePath)
+    val dirContents = Files.list(featureFileDir).collect(Collectors.toList[Path]).asScala.toList
 
-    dirContents.partition(_.isDirectory) match {
+    dirContents.partition(Files.isDirectory(_)) match {
       case (dirs, files) => {
-        writeFeatures(files.filter(_.getName.endsWith(".feature")), targetDir)
+        writeFeatures(files.filter(_.toString.endsWith(".feature")), targetDir)
         dirs.foreach(generateFeatures(_, baseOutputDir, relativeTo))
       }
     }
   }
 
-  private[this] def writeFeatures(features: Seq[File], outputDir: File) = {
-    outputDir.mkdirs()
+  private[this] def writeFeatures(features: Seq[Path], outputDir: Path) = {
+    Files.createDirectories(outputDir)
     features.foreach { featureFile =>
-      val html = FeatureHtml(FeatureReader.read(Files.readAllLines(featureFile.toPath, StandardCharsets.UTF_8).asScala.toList))
-      val targetFile = new File(outputDir, featureFile.getName + ".html")
+      val html = FeatureHtml(FeatureReader.read(Files.readAllLines(featureFile, StandardCharsets.UTF_8).asScala.toList))
+      val targetFile = outputDir.resolve(featureFile.getFileName.toString + ".html")
 
-      writeHtml(html, targetFile)
+      writeHtml(html, targetFile.toFile)
     }
   }
 }
