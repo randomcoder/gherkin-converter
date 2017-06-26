@@ -18,6 +18,11 @@
 
 package uk.co.randomcoding.cucumber.generator
 
+import java.io.File
+import java.nio.file.{Files, Path}
+
+import org.scalatest.Assertion
+
 import scala.io.Source
 
 import scala.language.implicitConversions
@@ -31,4 +36,25 @@ trait FeatureTestHelpers {
   implicit def sourceToLines(s: Source): List[String] = s.getLines().toList
 
   implicit def pathToLines(p: String): List[String] = Source.fromInputStream(getClass.getResourceAsStream(p)).getLines().toList
+}
+
+  trait FileTestHelpers {
+  def withTempDir(test: File => Assertion): Assertion = {
+    val tempDir = Files.createTempDirectory("")
+
+    try test(tempDir)
+    finally deleteAll(tempDir)
+  }
+
+  private[this] def deleteAll(path: File): Unit = {
+    if (path.isDirectory) Option(path.listFiles).map(_.toList).getOrElse(Nil).foreach(deleteAll)
+    path.delete()
+  }
+
+  def createFile(directory: File, name: String): Path = {
+    Files.createFile(directory.resolve(name))
+  }
+
+  implicit def fileToPath(f: File): Path = f.toPath
+  implicit def pathToFile(p: Path): File = p.toFile
 }

@@ -18,42 +18,39 @@
 
 package uk.co.randomcoding.cucumber.generator.html
 
-import java.io.File
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
+import java.nio.file.{Files, Path}
 
 import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, ScenarioDesc, ScenarioOutline}
 import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
-import uk.co.randomcoding.cucumber.generator.writer.writeFile
+import uk.co.randomcoding.cucumber.generator.writer.writeHtml
 
 import scala.collection.JavaConverters._
-import scala.io.Source
-import scala.util.Try
 import scala.xml.NodeSeq
 
 trait FeatureHtml {
 
-  def generateFeatures(dir: File, baseOutputDir: File, relativeTo: File): Unit = {
-    val relativePath = dir.toPath.relativize(relativeTo.toPath).toString
-    val targetDir = new File(baseOutputDir, relativePath)
+  def generateFeatures(featureFileDir: Path, baseOutputDir: Path, relativeTo: Path): Unit = {
+    val relativePath = if (featureFileDir == relativeTo) "" else featureFileDir.subpath(relativeTo.getNameCount, featureFileDir.getNameCount).toString
 
-    val dirContents = Try(dir.listFiles.toList).getOrElse(Nil)
+    val targetDir = baseOutputDir.resolve(relativePath)
+    val dirContents = featureFileDir.toFile.listFiles().map(_.toPath)
 
-    dirContents.partition(_.isDirectory) match {
+    dirContents.partition(Files.isDirectory(_)) match {
       case (dirs, files) => {
-        writeFeatures(files.filter(_.getName.endsWith(".feature")), targetDir)
+        writeFeatures(files.filter(_.toString.endsWith(".feature")), targetDir)
         dirs.foreach(generateFeatures(_, baseOutputDir, relativeTo))
       }
     }
   }
 
-  private[this] def writeFeatures(features: Seq[File], outputDir: File) = {
-    outputDir.mkdirs()
+  private[this] def writeFeatures(features: Seq[Path], outputDir: Path) = {
+    Files.createDirectories(outputDir)
     features.foreach { featureFile =>
-      val html = FeatureHtml(FeatureReader.read(Files.readAllLines(featureFile.toPath, StandardCharsets.UTF_8).asScala.toList))
-      val targetFile = new File(outputDir, featureFile.getName + ".html")
+      val html = FeatureHtml(FeatureReader.read(Files.readAllLines(featureFile, StandardCharsets.UTF_8).asScala.toList))
+      val targetFile = outputDir.resolve(featureFile.getFileName.toString + ".html")
 
-      writeFile(html, targetFile)
+      writeHtml(html, targetFile.toFile)
     }
   }
 }
@@ -62,17 +59,11 @@ object FeatureHtml {
   def apply(feature: Feature): NodeSeq = {
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>Feature: {feature.description}</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-        <style type="text/css">
-          {customCss}
-        </style>
+        {metaTags}
+        {jquery}
+        {bootstrap}
+        {customCss}
       </head>
       <body>
         <div class="container">
@@ -128,7 +119,7 @@ object FeatureHtml {
       stepsHtml(scenario.whens, "when") ++
       stepsHtml(scenario.thens, "then") ++
       (scenario match {
-        case ScenarioOutline(_, _, _, _, _, examples) => examplesHtml(examples)
+        case ScenarioOutline(_, _, _, _, _, examples) => examples.map(examplesHtml)
         case _ => Nil
       })
       }
@@ -167,6 +158,4 @@ object FeatureHtml {
       </div>
     </div>
   }
-
-  private[this] val customCss = Source.fromInputStream(getClass.getResourceAsStream("/feature_styles.css")).getLines().mkString("\n")
 }

@@ -26,17 +26,65 @@ import scala.xml.NodeSeq
 
 trait IndexHtml {
 
-  def writeIndexFiles(baseDir: File): Unit = writeIndexFiles(baseDir, false)
+  def writeIndexFiles(baseDir: File, mainTitle: String): Unit = writeIndexFiles(baseDir, false, mainTitle)
 
-  private[this] def writeIndexFiles(htmlDir: File, linkToParent: Boolean): Unit = {
+  private[this] def writeIndexFiles(htmlDir: File, linkToParent: Boolean, title: String): Unit = {
     val htmlFeatureFiles = htmlDir.list().filter(_.endsWith(".feature.html"))
-    val filesLinks = htmlFeatureFiles.map(file => <li><a href={file}>{file.takeWhile(_ != '.').replaceAll("""([A-Z0-9])""", """ $1""").trim}</a></li>)
-    val dirLinks = htmlDir.listFiles().filter(_.isDirectory).map{ dir => <li><a href={dir.getName + "/index.html"}>{dir.getName.capitalize}</a></li> }
-    val parentLink = if (linkToParent) <li><a href="../index.html">Up</a></li> else NodeSeq.Empty
-    val linksList = <ul>{parentLink ++ filesLinks ++ dirLinks}</ul>
+    val subDirectories = htmlDir.listFiles().filter(_.isDirectory)
 
-    writeFile(linksList, new File(htmlDir, "index.html"))
+    val featureFileLinks = htmlFeatureFiles.map(fileName => <li><a href={fileName}>{linkTextFromName(fileName)}</a></li>)
+    val subDirectoryLinks = subDirectories.map { dir => <li><a href={dir.getName + "/index.html"}>{linkTextFromName(dir.getName)}</a></li> }
+    val linksList = featureFileLinks ++ subDirectoryLinks
 
-    htmlDir.listFiles().filter(_.isDirectory).foreach(writeIndexFiles(_, true))
+    if (linksList.nonEmpty) {
+      writeHtml(IndexHtml(title, <ul>{featureFileLinks}</ul>, <ul>{subDirectoryLinks}</ul>, linkToParent), new File(htmlDir, "index.html"))
+      subDirectories.foreach(subDirectory => writeIndexFiles(subDirectory, true, linkTextFromName(subDirectory.getName)))
+    }
+  }
+
+  private[this] def linkTextFromName(name: String) = {
+    name.takeWhile(_ != '.').replaceAll("""([A-Z0-9][a-z0-9])""", """ $1""").trim
+  }
+}
+
+object IndexHtml {
+  def apply(title: String, featureLinks: NodeSeq, subDirectoryLinks: NodeSeq, linkToParent: Boolean) = {
+    <html lang="en">
+      <head>
+        <title>Features: {title}</title>
+        {metaTags}
+        {jquery}
+        {bootstrap}
+        {customCss}
+      </head>
+      <body>
+        <div class="container">
+          <div class="row">
+            <div class="col col-sm-10 col-sm-offset-1">
+              <div class="row">
+                <div class="col col-sm-12 page_title" id="page_title">
+                  {title}
+                </div>
+              </div>{ if (linkToParent)
+              <div class="row">
+                <div class="col col-sm-12 parent_link" id="parent_link">
+                  <a href="../index.html">Up</a>
+                </div>
+              </div>}
+              <div class="row">
+                <div class="col col-sm-12 feature_link" id="feature_links">
+                  {featureLinks}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col col-sm-12 sub_directory_link" id="sub_directory_links">
+                  {subDirectoryLinks}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>
   }
 }

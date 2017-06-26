@@ -23,7 +23,7 @@ import java.io.{File, FileWriter}
 import scala.xml.{NodeSeq, XML}
 
 package object writer {
-  def writeFile(html: NodeSeq, targetFile: File) = {
+  def writeHtml(html: NodeSeq, targetFile: File) = {
     val writer = new FileWriter(targetFile)
     writer.write("<!DOCTYPE html>\n")
     XML.write(writer, html.head, "UTF-8", false, null)

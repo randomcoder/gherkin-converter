@@ -44,7 +44,7 @@ case class Scenario(description: String, tags: Seq[String], givens: Seq[String],
   override val identifier = "Scenario"
 }
 
-case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Examples) extends ScenarioDesc {
+case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Seq[Examples]) extends ScenarioDesc {
   override val identifier = "Scenario Outline"
 }
 

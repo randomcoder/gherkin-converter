@@ -22,8 +22,8 @@ import java.io.File
 
 class HtmlFeatureGenerator extends FeatureHtml with IndexHtml {
 
-  def generateIndexes(baseDir: File): Unit = writeIndexFiles(baseDir)
+  def generateIndexes(baseDir: File, mainTitle: String): Unit = writeIndexFiles(baseDir, mainTitle)
 
-  def generateFeatures(baseDir: File, outputDir: File): Unit = generateFeatures(baseDir, outputDir, baseDir)
+  def generateFeatures(baseDir: File, outputDir: File): Unit = generateFeatures(baseDir.toPath, outputDir.toPath, baseDir.toPath)
 
 }

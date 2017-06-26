@@ -115,5 +115,5 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
 
   private[this] val basicScenarioOutline1 = ScenarioOutline("A simple scenario outline that has single line steps", Seq("@scenario-outline-tag-1"),
     Seq("Given a precondition <condition>"), Seq("When I do something"), Seq("Then I get the result I expected of <result>"),
-    Examples(Seq("condition", "result"), Seq(Seq("test 1", "result 1")), Nil))
+    Seq(Examples(Seq("condition", "result"), Seq(Seq("test 1", "result 1")), Nil)))
 }
