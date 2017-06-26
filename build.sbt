@@ -8,7 +8,7 @@ version := "0.6.3-SNAPSHOT"
 
 scalaVersion := "2.10.6"
 
-scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-deprecation")
+scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-deprecation", "-target:jvm-1.6")
 
 libraryDependencies ++= loggingDependencies ++ testDependencies
 

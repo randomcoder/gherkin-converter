@@ -20,7 +20,6 @@ package uk.co.randomcoding.cucumber.generator.html
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path}
-import java.util.stream.Collectors
 
 import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, ScenarioDesc, ScenarioOutline}
 import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
@@ -35,7 +34,7 @@ trait FeatureHtml {
     val relativePath = if (featureFileDir == relativeTo) "" else featureFileDir.subpath(relativeTo.getNameCount, featureFileDir.getNameCount).toString
 
     val targetDir = baseOutputDir.resolve(relativePath)
-    val dirContents = Files.list(featureFileDir).collect(Collectors.toList[Path]).asScala.toList
+    val dirContents = featureFileDir.toFile.listFiles().map(_.toPath)
 
     dirContents.partition(Files.isDirectory(_)) match {
       case (dirs, files) => {
