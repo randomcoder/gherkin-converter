@@ -21,7 +21,7 @@ package uk.co.randomcoding.cucumber.generator.html
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path}
 
-import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, ScenarioDesc, ScenarioOutline}
+import uk.co.randomcoding.cucumber.generator.gherkin._
 import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
 import uk.co.randomcoding.cucumber.generator.writer.writeHtml
 
@@ -126,11 +126,11 @@ object FeatureHtml {
     </div>
   }
 
-  private[this] def stepsHtml(steps: Seq[String], gwtClass: String) = {
+  private[this] def stepsHtml(steps: Seq[Step], gwtClass: String) = {
     steps.flatMap { step =>
       <div class="row">
         <div class={s"col col-sm-12 $gwtClass"}>
-          {step}
+          {step.text}
         </div>
       </div>
     }

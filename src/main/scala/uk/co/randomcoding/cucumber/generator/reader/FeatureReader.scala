@@ -86,13 +86,13 @@ object FeatureReader {
   private[this] def readScenario(scenarioLines: Seq[String], scenario: Scenario): (Scenario, Seq[String]) = {
     scenarioLines match {
       case Nil => (scenario, Nil)
-      case givenLine :: rest if givenLine.startsWith(GIVEN) => readScenario(rest, scenario.copy(givens = scenario.givens :+ givenLine))
-      case whenLine :: rest if whenLine.startsWith(WHEN) => readScenario(rest, scenario.copy(whens = scenario.whens :+ whenLine))
-      case thenLine :: rest if thenLine.startsWith(THEN) => readScenario(rest, scenario.copy(thens = scenario.thens :+ thenLine))
+      case givenLine :: rest if givenLine.startsWith(GIVEN) => readScenario(rest, scenario.copy(givens = scenario.givens :+ Given(givenLine)))
+      case whenLine :: rest if whenLine.startsWith(WHEN) => readScenario(rest, scenario.copy(whens = scenario.whens :+ When(whenLine)))
+      case thenLine :: rest if thenLine.startsWith(THEN) => readScenario(rest, scenario.copy(thens = scenario.thens :+ Then(thenLine)))
       case andOrButLine :: rest if andOrButLine.startsWith(AND) || andOrButLine.startsWith(BUT) => scenario match {
-        case Scenario(_, _, _, Nil, Nil) => readScenario(rest, scenario.copy(givens = scenario.givens :+ andOrButLine))
-        case Scenario(_, _, _, _, Nil) => readScenario(rest, scenario.copy(whens = scenario.whens :+ andOrButLine))
-        case _ => readScenario(rest, scenario.copy(thens = scenario.thens :+ andOrButLine))
+        case Scenario(_, _, _, Nil, Nil) => readScenario(rest, scenario.copy(givens = scenario.givens :+ Given(andOrButLine)))
+        case Scenario(_, _, _, _, Nil) => readScenario(rest, scenario.copy(whens = scenario.whens :+ When(andOrButLine)))
+        case _ => readScenario(rest, scenario.copy(thens = scenario.thens :+ Then(andOrButLine)))
       }
       case "" :: rest => (scenario, rest)
       case _ :: rest => readScenario(rest, scenario)
@@ -102,13 +102,13 @@ object FeatureReader {
   private[this] def readScenarioOutline(scenarioLines: Seq[String], scenarioOutline: ScenarioOutline): (ScenarioOutline, Seq[String]) = {
     scenarioLines match {
       case Nil => (scenarioOutline, Nil)
-      case givenLine :: rest if givenLine.startsWith(GIVEN) => readScenarioOutline(rest, scenarioOutline.copy(givens = scenarioOutline.givens :+ givenLine))
-      case whenLine :: rest if whenLine.startsWith(WHEN) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ whenLine))
-      case thenLine :: rest if thenLine.startsWith(THEN) => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ thenLine))
+      case givenLine :: rest if givenLine.startsWith(GIVEN) => readScenarioOutline(rest, scenarioOutline.copy(givens = scenarioOutline.givens :+ Given(givenLine)))
+      case whenLine :: rest if whenLine.startsWith(WHEN) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ When(whenLine)))
+      case thenLine :: rest if thenLine.startsWith(THEN) => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ Then(thenLine)))
       case andOrButLine :: rest if andOrButLine.startsWith(AND) || andOrButLine.startsWith(BUT) => scenarioOutline match {
-        case ScenarioOutline(_, _, _, Nil, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(givens = scenarioOutline.givens :+ andOrButLine))
-        case ScenarioOutline(_, _, _, _, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ andOrButLine))
-        case _ => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ andOrButLine))
+        case ScenarioOutline(_, _, _, Nil, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(givens = scenarioOutline.givens :+ Given(andOrButLine)))
+        case ScenarioOutline(_, _, _, _, Nil, _) => readScenarioOutline(rest, scenarioOutline.copy(whens = scenarioOutline.whens :+ When(andOrButLine)))
+        case _ => readScenarioOutline(rest, scenarioOutline.copy(thens = scenarioOutline.thens :+ Then(andOrButLine)))
       }
       case examplesSectionWithTags@("" :: exampleTags :: EXAMPLES :: _) if exampleTags.startsWith("@") => {
         val (newExamples, remaining) = readExamples(examplesSectionWithTags.tail, Examples(Nil, Nil, Nil))

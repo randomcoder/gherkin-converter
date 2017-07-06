@@ -17,7 +17,7 @@
  */
 package uk.co.randomcoding.cucumber.generator.reader
 
-import uk.co.randomcoding.cucumber.generator.gherkin.Scenario
+import uk.co.randomcoding.cucumber.generator.gherkin.{Given, Scenario, Then, When}
 import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
 import scala.language.implicitConversions
@@ -53,21 +53,21 @@ class CucumberScenarioReaderSpec extends FlatSpecTest with FeatureTestHelpers {
   }
 
   private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
-    Seq("Given a simple precondition"), Seq("When I do something easy"), Seq("Then I get the result I expected"))
+    Seq(Given("Given a simple precondition")), Seq(When("When I do something easy")), Seq(Then("Then I get the result I expected")))
 
   private[this] val simpleScenarioWithAnds = Scenario("A simple scenario where all steps have an 'and'", Seq("@scenario-and-tag-1"),
-    Seq("Given a simple precondition", "And another simple precondition"),
-    Seq("When I do something easy", "And do something tricky"),
-    Seq("Then I get the result I expected", "And nothing else happens"))
+    Seq(Given("Given a simple precondition"), Given("And another simple precondition")),
+    Seq(When("When I do something easy"), When("And do something tricky")),
+    Seq(Then("Then I get the result I expected"), Then("And nothing else happens")))
 
   private[this] val simpleScenarioWithButs = Scenario("A simple scenario where all steps have a 'but'", Seq("@scenario-and-tag-2"),
-    Seq("Given a simple precondition", "But another simple precondition"),
-    Seq("When I do something easy", "But do something tricky"),
-    Seq("Then I get the result I expected", "But nothing else happens"))
+    Seq(Given("Given a simple precondition"), Given("But another simple precondition")),
+    Seq(When("When I do something easy"), When("But do something tricky")),
+    Seq(Then("Then I get the result I expected"), Then("But nothing else happens")))
 
   private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
-    Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))
+    Seq(Given("Given a precondition")), Seq(When("When I do something")), Seq(Then("Then I get the result I expected")))
 
   private[this] val basicScenario2 = Scenario("Another simple scenario that has single line steps", Nil,
-    Seq("Given a second precondition"), Seq("When I do something else"), Seq("Then I also get the result I expected"))
+    Seq(Given("Given a second precondition")), Seq(When("When I do something else")), Seq(Then("Then I also get the result I expected")))
 }

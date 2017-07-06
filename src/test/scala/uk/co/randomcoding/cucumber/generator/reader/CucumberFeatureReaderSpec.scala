@@ -18,7 +18,7 @@
 package uk.co.randomcoding.cucumber.generator.reader
 
 import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier._
-import uk.co.randomcoding.cucumber.generator.gherkin.{Examples, Feature, Scenario, ScenarioOutline}
+import uk.co.randomcoding.cucumber.generator.gherkin._
 import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
 import scala.io.Source
@@ -111,9 +111,9 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
                                         s"I want $simpleIWantTo")
 
   private[this] val basicScenario1 = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
-    Seq("Given a precondition"), Seq("When I do something"), Seq("Then I get the result I expected"))
+    Seq(Given("Given a precondition")), Seq(When("When I do something")), Seq(Then("Then I get the result I expected")))
 
   private[this] val basicScenarioOutline1 = ScenarioOutline("A simple scenario outline that has single line steps", Seq("@scenario-outline-tag-1"),
-    Seq("Given a precondition <condition>"), Seq("When I do something"), Seq("Then I get the result I expected of <result>"),
+    Seq(Given("Given a precondition <condition>")), Seq(When("When I do something")), Seq(Then("Then I get the result I expected of <result>")),
     Seq(Examples(Seq("condition", "result"), Seq(Seq("test 1", "result 1")), Nil)))
 }

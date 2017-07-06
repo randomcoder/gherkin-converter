@@ -35,16 +35,25 @@ case class Feature(description: String, inOrderTo: String, asA: String, iWantTo:
 sealed trait ScenarioDesc extends GherkinComponent {
   def description: String
   def tags: Seq[String]
-  def givens: Seq[String]
-  def whens: Seq[String]
-  def thens: Seq[String]
+  def givens: Seq[Given]
+  def whens: Seq[When]
+  def thens: Seq[Then]
 }
 
-case class Scenario(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String]) extends ScenarioDesc {
+trait Step {
+  def text: String
+  def data: Option[Seq[String]]
+}
+
+case class Given(text: String, data: Option[Seq[String]] = None) extends Step
+case class When(text: String, data: Option[Seq[String]] = None) extends Step
+case class Then(text: String, data: Option[Seq[String]] = None) extends Step
+
+case class Scenario(description: String, tags: Seq[String], givens: Seq[Given], whens: Seq[When], thens: Seq[Then]) extends ScenarioDesc {
   override val identifier = "Scenario"
 }
 
-case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[String], whens: Seq[String], thens: Seq[String], examples: Seq[Examples]) extends ScenarioDesc {
+case class ScenarioOutline(description: String, tags: Seq[String], givens: Seq[Given], whens: Seq[When], thens: Seq[Then], examples: Seq[Examples]) extends ScenarioDesc {
   override val identifier = "Scenario Outline"
 }
 
