@@ -26,15 +26,19 @@ import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
 import uk.co.randomcoding.cucumber.generator.writer.writeHtml
 
 import scala.collection.JavaConverters._
+import scala.util.Try
 import scala.xml.NodeSeq
 
 trait FeatureHtml {
 
   def generateFeatures(featureFileDir: Path, baseOutputDir: Path, relativeTo: Path): Unit = {
-    val relativePath = if (featureFileDir == relativeTo) "" else featureFileDir.subpath(relativeTo.getNameCount, featureFileDir.getNameCount).toString
+    val relativePath = {
+      if (featureFileDir == relativeTo) ""
+      else Try(featureFileDir.subpath(relativeTo.getNameCount, featureFileDir.getNameCount)).getOrElse("").toString
+    }
 
     val targetDir = baseOutputDir.resolve(relativePath)
-    val dirContents = featureFileDir.toFile.listFiles().map(_.toPath)
+    val dirContents = Option(featureFileDir.toFile.listFiles).map(_.toList).getOrElse(Nil).map(_.toPath)
 
     dirContents.partition(Files.isDirectory(_)) match {
       case (dirs, files) => {

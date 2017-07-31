@@ -18,6 +18,8 @@
 
 package uk.co.randomcoding.cucumber.generator.html
 
+import java.nio.file.{Files, Paths}
+
 import org.scalatest.StreamlinedXmlNormMethods
 import uk.co.randomcoding.cucumber.generator.FlatSpecTest
 import uk.co.randomcoding.cucumber.generator.gherkin.Feature
@@ -60,5 +62,15 @@ class FeatureHtmlSpec extends FlatSpecTest with StreamlinedXmlNormMethods {
   it should "display the feature tags in a div with the id 'feature_tags' if the feature has tags" in {
     val feature = Feature("", "", "", "", Seq("@tag1", "@tag2"), Nil)
     FeatureHtml(feature).divWithId("feature_tags").text.trim should be("@tag1 @tag2")
+  }
+
+  it should "not throw an exception and write no output if the source directory does not exist" in {
+    object featureGen extends FeatureHtml
+
+    val outPath = Files.createTempDirectory("testout")
+
+    noException should be thrownBy featureGen.generateFeatures(Paths.get("nothinghere"), outPath, outPath)
+
+    outPath.toFile.list() should be(empty)
   }
 }
