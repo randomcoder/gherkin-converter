@@ -21,8 +21,6 @@ import uk.co.randomcoding.cucumber.generator.gherkin.GherkinComponentIdentifier.
 import uk.co.randomcoding.cucumber.generator.gherkin._
 import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
-import scala.io.Source
-
 import scala.language.implicitConversions
 
 class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
@@ -82,10 +80,7 @@ class CucumberFeatureReaderSpec extends FlatSpecTest with FeatureTestHelpers {
   }
 
   it should "Correctly identify the number of different scenarios present under the feature" in {
-    val file = Source.fromInputStream(getClass.getResourceAsStream("/basic-feature.feature"))
-
-    val feature = FeatureReader.read(file)
-    feature.scenarios should have size 2
+    FeatureReader.read("/basic-feature.feature").scenarios should have size 2
   }
 
   it should "Read the full feature and scenarios from a feature file with Scenarios and Scenario Outlines" in {
