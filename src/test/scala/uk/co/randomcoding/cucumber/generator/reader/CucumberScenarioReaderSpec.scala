@@ -20,14 +20,16 @@ package uk.co.randomcoding.cucumber.generator.reader
 import uk.co.randomcoding.cucumber.generator.gherkin.{Given, Scenario, Then, When}
 import uk.co.randomcoding.cucumber.generator.{FeatureTestHelpers, FlatSpecTest}
 
+import scala.io.Source
+
 import scala.language.implicitConversions
 
 /**
- * Tests for the correct reading of Scenario information including tags and Example data
- * for Scenario Outlines
- *
- * @author RandomCoder
- */
+  * Tests for the correct reading of Scenario information including tags and Example data
+  * for Scenario Outlines
+  *
+  * @author RandomCoder
+  */
 class CucumberScenarioReaderSpec extends FlatSpecTest with FeatureTestHelpers {
 
   behaviour of "A Feature Reader"
@@ -50,6 +52,53 @@ class CucumberScenarioReaderSpec extends FlatSpecTest with FeatureTestHelpers {
   it should "Read a Scenario from a Feature that has a single Scenario with each step having 'Buts'" in {
     val feature = FeatureReader.read("/single-scenario-with-buts.feature")
     feature.scenarios should be(Seq(simpleScenarioWithButs))
+  }
+
+  it should "read a data table from a step within a scenario" in {
+    val feature = Source.fromString(
+      """|@basic @feature @demo
+         |Feature: The Feature Reader should be able to read basic feature files that have simple scenarios in.
+         |  In order to be able to parse feature details from a file
+         |  As a person developing the library
+         |  I want to be able to read details from a file
+         |
+         |Scenario: A simple scenario that has single line steps and a data table
+         |    Given a precondition with data
+         |      | head 1   | head 2   |
+         |      | value 11 | value 12 |
+         |      | value 21 | value 22 |
+         |    When I do something
+         |    Then I get the result I expected
+      """.stripMargin)
+
+    val scenario = Scenario("A simple scenario that has single line steps and a data table", Nil,
+      Seq(Given("Given a precondition with data", Some(Seq("| head 1   | head 2   |", "| value 11 | value 12 |", "| value 21 | value 22 |")))),
+      Seq(When("When I do something")),
+      Seq(Then("Then I get the result I expected")))
+
+    FeatureReader.read(feature).scenarios should be(Seq(scenario))
+  }
+
+  it should "read a data on the same line from a step within a scenario" in {
+    val feature = Source.fromString(
+      """|@basic @feature @demo
+         |Feature: The Feature Reader should be able to read basic feature files that have simple scenarios in.
+         |  In order to be able to parse feature details from a file
+         |  As a person developing the library
+         |  I want to be able to read details from a file
+         |
+         |Scenario: A simple scenario that has single line steps and a data table
+         |    Given a precondition with data: value1, value2
+         |    When I do something
+         |    Then I get the result I expected
+      """.stripMargin)
+
+    val scenario = Scenario("A simple scenario that has single line steps and a data table", Nil,
+      Seq(Given("Given a precondition with data: value1, value2", None)),
+      Seq(When("When I do something")),
+      Seq(Then("Then I get the result I expected")))
+
+    FeatureReader.read(feature).scenarios should be(Seq(scenario))
   }
 
   private[this] val simpleScenario = Scenario("A simple scenario that has single line steps", Seq("@scenario-tag-1"),
