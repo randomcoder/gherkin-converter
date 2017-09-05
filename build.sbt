@@ -4,13 +4,13 @@ name := "gherkin-converter"
 
 organization :=  "uk.co.randomcoding"
 
-version := "0.6.3"
+version := "0.7.0-SNAPSHOT"
 
-scalaVersion := "2.10.6"
+scalaVersion := "2.12.3"
 
-scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-deprecation", "-target:jvm-1.6")
+scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-deprecation", "-target:jvm-1.8")
 
-libraryDependencies ++= loggingDependencies ++ testDependencies
+libraryDependencies ++= loggingDependencies ++ testDependencies :+ scalaXml
 
 testOptions in Test  ++= Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM"))
 

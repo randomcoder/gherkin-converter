@@ -33,6 +33,7 @@ object Dependencies {
   val groovyVersion = "2.4.10"
   val gherkinVersion = "2.12.1"
   val scalacheckVersion = "1.13.5"
+  val scalaXmlVersion = "1.0.6"
 
   val exclude = (org: String, packageName: String) => ExclusionRule(organization = org, name = packageName)
 
@@ -43,6 +44,8 @@ object Dependencies {
 
   lazy val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   lazy val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
+
+  lazy val scalaXml = "org.scala-lang.modules" %% "scala-xml" % scalaXmlVersion
 
   val loggingDependencies = Seq(logback, groovy)
   val testDependencies = Seq(scalatest, scalacheck)
