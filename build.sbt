@@ -10,7 +10,7 @@ scalaVersion := "2.12.3"
 
 scalacOptions in Compile ++= Seq("-feature", "-unchecked", "-deprecation", "-target:jvm-1.8")
 
-libraryDependencies ++= loggingDependencies ++ testDependencies :+ scalaXml
+libraryDependencies ++= compileDependencies ++ testDependencies
 
 testOptions in Test  ++= Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDSHM"))
 

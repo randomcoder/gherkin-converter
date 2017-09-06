@@ -25,28 +25,26 @@ import sbt._
  */
 object Dependencies {
 
-  val scalaLoggingVersion = "3.5.0"
-  val scalatestVersion = "3.0.3"
-  val logbackVersion = "1.2.3"
-  val jodaTimeVersion = "2.9.9"
-  val jodaConvertVersion = "1.8.1"
-  val groovyVersion = "2.4.10"
-  val gherkinVersion = "2.12.1"
-  val scalacheckVersion = "1.13.5"
-  val scalaXmlVersion = "1.0.6"
+  private[this] val scalaLoggingVersion = "3.7.2"
+  private[this] val scalatestVersion = "3.0.3"
+  private[this] val logbackVersion = "1.2.3"
+  private[this] val groovyVersion = "2.4.10"
+  private[this] val scalacheckVersion = "1.13.5"
+  private[this] val scalaXmlVersion = "1.0.6"
 
-  val exclude = (org: String, packageName: String) => ExclusionRule(organization = org, name = packageName)
+  private[this] val exclude = (org: String, packageName: String) => ExclusionRule(organization = org, name = packageName)
 
   val excludeLog4j = exclude("log4j", "log4j")
 
   lazy val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % "test" excludeAll excludeLog4j
   lazy val scalacheck = "org.scalacheck" %% "scalacheck" % scalacheckVersion % "test"
 
+  lazy val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
   lazy val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   lazy val groovy = "org.codehaus.groovy" % "groovy" % groovyVersion
 
   lazy val scalaXml = "org.scala-lang.modules" %% "scala-xml" % scalaXmlVersion
 
-  val loggingDependencies = Seq(logback, groovy)
+  val compileDependencies = Seq(logback, groovy, scalaXml)
   val testDependencies = Seq(scalatest, scalacheck)
 }
