@@ -4,7 +4,7 @@ name := "gherkin-converter"
 
 organization :=  "uk.co.randomcoding"
 
-version := "0.7.0"
+version := "0.7.1"
 
 scalaVersion := "2.12.3"
 
